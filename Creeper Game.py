@@ -366,7 +366,11 @@ def checkForQuit():
             terminate()
         pygame.event.post(event)
 
+def game():
+    while True:
+        main()
+
 if __name__ == "__main__":
-    main()
+    game()
     # print(fetchImages(comeOnVer, comeOnUnits))
     # print(drawBackground())
