@@ -40,13 +40,6 @@ comeOnUnits = ('u1', 'u2')
 def main():
 
     global DISPLAYSURF, creeperSound, explosionImgs, FPSCLOCK
-
-    def drawBackground():
-        for heightTile in range(0, 6):
-            for widthTile in range(0,8):
-                DISPLAYSURF.blit(backgroundImage, (widthTile*128, heightTile*128))
-
-
     
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
@@ -104,44 +97,41 @@ def main():
         drawScoreHouse(scores)
         teamTurn = teamOrder[turnCount]
         
-        if gameState == 'PLAY':
-            drawBoard(gameBoard, coverImages, revealedBoxes, teamTurn)      
-            for event in pygame.event.get(): # Event handling loop
-                if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-                    terminate()
-                elif event.type == MOUSEMOTION:
-                    mousex, mousey = event.pos
-                # elif event.type == MOUSEBUTTONDOWN:
-                #     mousex, mousey = event.pos
-                #     mouseClicked = 'Down'
-                elif event.type == MOUSEBUTTONUP:
-                    mousex, mousey = event.pos
-                    mouseClicked = True
+        # if gameState == 'PLAY':
+        drawBoard(gameBoard, coverImages, revealedBoxes, teamTurn)      
+        for event in pygame.event.get(): # Event handling loop
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == MOUSEMOTION:
+                mousex, mousey = event.pos
+            elif event.type == MOUSEBUTTONUP:
+                mousex, mousey = event.pos
+                mouseClicked = True
 
-            boxx, boxy = getBoxAtPixel(mousex, mousey)
-            if boxx != None and boxy != None:
-                # The mouse is currently over a box.
-                if not revealedBoxes[boxx][boxy]:
-                    drawHighlightBox(boxx, boxy)
-                    
-                    if mouseClicked == True:
-                        revealedBoxes[boxx][boxy] = True
-                        revealedCount += 1
-                    
-                        #This part operates the team scoring
-                        if gameBoard[boxx][boxy] == 'O': # If you find stone...
-                            scores[teamTurn] += 1
-                            safeSound.play()
+        boxx, boxy = getBoxAtPixel(mousex, mousey)
+        if boxx != None and boxy != None:
+            # The mouse is currently over a box.
+            if not revealedBoxes[boxx][boxy]:
+                drawHighlightBox(boxx, boxy)
+                
+                if mouseClicked == True:
+                    revealedBoxes[boxx][boxy] = True
+                    revealedCount += 1
+                
+                    #This part operates the team scoring
+                    if gameBoard[boxx][boxy] == 'O': # If you find stone...
+                        scores[teamTurn] += 1
+                        safeSound.play()
 
-                            
-                        elif gameBoard[boxx][boxy] == 'C': #If you find a creeper...
-                            scores[teamTurn] = 0
-                            pygame.display.update()
-                            explosionAnimation(teamTurn)
-                        turnCount += 1
-                        turnsTaken[teamTurn] += 1
-                        if turnCount > 1:
-                            turnCount = 0
+                        
+                    elif gameBoard[boxx][boxy] == 'C': #If you find a creeper...
+                        scores[teamTurn] = 0
+                        pygame.display.update()
+                        explosionAnimation(teamTurn)
+                    turnCount += 1
+                    turnsTaken[teamTurn] += 1
+                    if turnCount > 1:
+                        turnCount = 0
 
             if turnsTaken['teamA'] == turnsTaken['teamB']: # The teams must take the same number of turns
 
@@ -151,37 +141,41 @@ def main():
                      
                         if scores['teamA'] == 4 and scores['teamB'] == 4:
                             winner = 'both'
-                            gameState = 'STOP'
                             winSound.play()
+                            return winner
                         
                         elif scores['teamA'] == 4 and scores['teamB'] != 4:
                             winner = 'teamA'
-                            gameState = 'STOP'
                             winSound.play()
+                            return winner
 
                         elif scores['teamB'] == 4 and scores['teamA'] != 4:
                             winner = 'teamB'
-                            gameState = 'STOP'
                             winSound.play()
+                            return winner
 
 
                 elif revealedCount == 16: # If the board is fully revealed...
-                    gameState = 'STOP'
                     winSound.play()
                     if scores['teamA'] > scores['teamB']:
                         winner = 'teamA'
                     elif scores['teamB'] > scores['teamA']:
                         winner = 'teamB'
+                    return winner
 
             
-        elif gameState == 'STOP': #Game is in suspended 'STOP' mode
-            
-            drawGameOverScreen(winner)
+
 
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
+
+
+def drawBackground():
+    for heightTile in range(0, 6):
+        for widthTile in range(0,8):
+            DISPLAYSURF.blit(backgroundImage, (widthTile*128, heightTile*128))
         
 def leftTopCoordsOfBox (boxx, boxy):
     # Convert board coordinates to pixel coordinates
@@ -258,6 +252,7 @@ def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
             # pygame.draw.rect(DISPLAYSURF, BLACK, (left, top, BUTTONSIZE, BUTTONSIZE))
 
 def drawGameOverScreen(winner):
+    pygame.display.update()
     checkForQuit()
 
     winnerImagePath = None
@@ -273,8 +268,13 @@ def drawGameOverScreen(winner):
 
     winnerImage = pygame.image.load(winnerImagePath)
 
-    
-    DISPLAYSURF.blit(winnerImage, ((128*2), (128)))
+    while True:    
+        DISPLAYSURF.blit(winnerImage, ((128*2), (128)))
+        for event in pygame.event.get():
+            if event.type == MOUSEBUTTONUP:
+                return
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
 
 def explosionAnimation(team):
     if team == 'teamA':
@@ -368,7 +368,8 @@ def checkForQuit():
 
 def game():
     while True:
-        main()
+        gameWinner = main()            
+        drawGameOverScreen(gameWinner)
 
 if __name__ == "__main__":
     game()
