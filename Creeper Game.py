@@ -91,7 +91,6 @@ def main():
     while True:
         mouseClicked = False
 
-        # drawBackground()
         DISPLAYSURF.blit(backgroundImage, (0,0))
         
         drawScoreHouse(scores)
@@ -171,11 +170,6 @@ def main():
         FPSCLOCK.tick(FPS)
 
 
-
-def drawBackground():
-    for heightTile in range(0, 6):
-        for widthTile in range(0,8):
-            DISPLAYSURF.blit(backgroundImage, (widthTile*128, heightTile*128))
         
 def leftTopCoordsOfBox (boxx, boxy):
     # Convert board coordinates to pixel coordinates
@@ -276,6 +270,16 @@ def drawGameOverScreen(winner):
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
+def drawWelcomeScreen():
+    
+    while True:
+        DISPLAYSURF.blit(backgroundImage, (0,0))
+        
+        checkForQuit()
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+
 def explosionAnimation(team):
     if team == 'teamA':
         location = (36, 415)
@@ -350,7 +354,6 @@ def generateTeamOrder():
     random.shuffle(teams)
     return teams
 
-
     
 
 def terminate():
@@ -367,11 +370,40 @@ def checkForQuit():
         pygame.event.post(event)
 
 def game():
+    #Initialization settings
+    global DISPLAYSURF, creeperSound, explosionImgs, FPSCLOCK
+    global backgroundImage, explosionImgs, creeperSound, safeSound, winSound
+
+    pygame.init()
+    FPSCLOCK = pygame.time.Clock()
+    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), pygame.RESIZABLE, display=0)
+    pygame.display.set_caption('The Creeper Game')
+
+    coverImages = fetchImages(comeOnVer, comeOnUnits)
+
+    backgroundPath = os.path.join(baseImagePath, 'background.png')
+    backgroundImage = pygame.image.load(backgroundPath)
+
+    pngSequenceLoc = os.path.join(baseImagePath, 'explosionSeq')
+    explosionSeq = [(os.path.join(pngSequenceLoc, pngFile)) for pngFile in os.listdir(pngSequenceLoc) if os.path.splitext(pngFile)[1] == '.png']
+    explosionImgs = [pygame.image.load(image) for image in explosionSeq]
+
+
+    creeperSoundPath = os.path.join(baseImagePath, 'creeperExplode.ogg')
+    safeSoundPath = os.path.join(baseImagePath, 'blockClick.ogg')
+    winSoundPath = os.path.join(baseImagePath, 'winSound.ogg')
+
+    creeperSound = pygame.mixer.Sound(creeperSoundPath)
+    safeSound = pygame.mixer.Sound(safeSoundPath)
+    winSound = pygame.mixer.Sound(winSoundPath)
+
     while True:
+        drawWelcomeScreen()
         gameWinner = main()            
         drawGameOverScreen(gameWinner)
 
 if __name__ == "__main__":
     game()
+
     # print(fetchImages(comeOnVer, comeOnUnits))
     # print(drawBackground())
