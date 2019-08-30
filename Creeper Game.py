@@ -274,11 +274,29 @@ def drawWelcomeScreen():
     
     while True:
         DISPLAYSURF.blit(backgroundImage, (0,0))
+
+        drawBookMenu()
         
         checkForQuit()
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
+def drawBookMenu():
+    
+    CO1BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO1Cover.png'))
+    CO2BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO2Cover.png'))
+    CO3BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO3Cover.png'))
+    CO4BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO4Cover.png'))
+
+    CO1MenuPos = leftTopCoordsOfBox(0, 0)
+    CO2MenuPos = leftTopCoordsOfBox(0, 1)
+    CO3MenuPos = leftTopCoordsOfBox(0, 2)
+    CO4MenuPos = leftTopCoordsOfBox(0, 3)
+
+    DISPLAYSURF.blit(CO1BookImg, CO1MenuPos)
+    DISPLAYSURF.blit(CO2BookImg, CO2MenuPos)
+    DISPLAYSURF.blit(CO3BookImg, CO3MenuPos)
+    DISPLAYSURF.blit(CO4BookImg, CO4MenuPos)
 
 def explosionAnimation(team):
     if team == 'teamA':
