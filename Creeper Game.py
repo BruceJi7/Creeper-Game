@@ -288,7 +288,7 @@ def drawBookMenu():
     CO3BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO3Cover.png'))
     CO4BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO4Cover.png'))
 
-    CO1MenuPos = leftTopCoordsOfBox(0, 0)
+    CO1MenuPos = leftTopCoordsOfBox(1, 0)
     CO2MenuPos = leftTopCoordsOfBox(0, 1)
     CO3MenuPos = leftTopCoordsOfBox(0, 2)
     CO4MenuPos = leftTopCoordsOfBox(0, 3)
