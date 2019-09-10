@@ -273,6 +273,7 @@ def drawWelcomeScreen():
         DISPLAYSURF.blit(backgroundImage, (0,0))
 
         drawBookMenu()
+        menuSelection()
         
         checkForQuit()
         pygame.display.update()
@@ -280,20 +281,33 @@ def drawWelcomeScreen():
 
 def drawBookMenu():
     
-    CO1BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO1Cover.png'))
-    CO2BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO2Cover.png'))
-    CO3BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO3Cover.png'))
-    CO4BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO4Cover.png'))
+    CO1BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO1Button.png'))
+    CO2BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO2Button.png'))
+    CO3BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO3Button.png'))
+    CO4BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
 
-    CO1MenuPos = leftTopCoordsOfBox(1, 0)
-    CO2MenuPos = leftTopCoordsOfBox(0, 1)
-    CO3MenuPos = leftTopCoordsOfBox(0, 2)
-    CO4MenuPos = leftTopCoordsOfBox(0, 3)
+    CO1MenuPos = (266, 138)
+    CO2MenuPos = (622, 138)
+    CO3MenuPos = (266, 450)
+    CO4MenuPos = (622, 450)
 
     DISPLAYSURF.blit(CO1BookImg, CO1MenuPos)
     DISPLAYSURF.blit(CO2BookImg, CO2MenuPos)
     DISPLAYSURF.blit(CO3BookImg, CO3MenuPos)
     DISPLAYSURF.blit(CO4BookImg, CO4MenuPos)
+
+def menuSelection():
+    CO1Rect = pygame.Rect(266, 138, 404, 318)
+    CO2Rect = pygame.Rect(622, 138, 760, 318)
+    CO3Rect = pygame.Rect(266, 450, 404, 630)
+    CO4Rect = pygame.Rect(622, 450, 760, 630)
+
+    for event in pygame.event.get():
+        if event.type == MOUSEMOTION:
+            mousex, mousey = event.pos
+            if (mousex, mousey) == CO1Rect.collidepoint:
+                print('Collision detectid')
+
 
 def explosionAnimation(team):
     if team == 'teamA':
