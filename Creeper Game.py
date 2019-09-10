@@ -31,8 +31,8 @@ WHITE           =(255, 255, 255)
 BLACK           =(  0,   0,   0)
 GREEN           =(  0, 200,   0)
 
-comeOnVer = 'CO1'
-comeOnUnits = ('u1', 'u2')
+comeOnVer = 'CO2'
+comeOnUnits = ('u4', 'u5')
 
 
 
