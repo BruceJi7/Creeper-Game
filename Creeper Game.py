@@ -5,9 +5,6 @@ from pygame.locals import *
 
 import pprint
 
-
-
-
 workingDir = r'C:\Come On Python Games\resources'
 os.chdir(workingDir)
 
@@ -313,10 +310,6 @@ def explosionAnimation(team):
         pygame.display.update()
         FPSCLOCK.tick(FPS/2)
 
-    
-    
-
-
 def getBoxAtPixel(x, y):
     for boxx in range(4):
         for boxy in range(4):
@@ -356,28 +349,20 @@ def drawScoreHouse(scoreDict):
     DISPLAYSURF.blit(loadTeamAImage, (teamAHouseCoords))
     DISPLAYSURF.blit(loadTeamBImage, (teamBHouseCoords))
 
-
-
-
-
 def generateRevealedBoxesData(val):
     revealedBoxes = []
     for i in range(4):
         revealedBoxes.append([val] * 4)
     return revealedBoxes
 
-
 def generateTeamOrder():
     teams = ['teamA', 'teamB']
     random.shuffle(teams)
     return teams
 
-    
-
 def terminate():
     pygame.quit()
     sys.exit()
-
 
 def checkForQuit():
     for event in pygame.event.get(QUIT): # get all the QUIT events
