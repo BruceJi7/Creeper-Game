@@ -237,11 +237,17 @@ def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
         currentTeamImg = teamBTurnImg
     DISPLAYSURF.blit(currentTeamImg, (318, 690))
 
+def welcomeScreen():
+    menuBoard = ['CO1', 'CO2', 'CO3', 'CO4']
+    menuY = '1'
+
+    CO1Menu = pygame.image.load(os.path.join(baseImagePath, 'CO1Button.png'))
+    CO2Menu = pygame.image.load(os.path.join(baseImagePath, 'CO2Button.png'))
+    CO3Menu = pygame.image.load(os.path.join(baseImagePath, 'CO3Button.png'))
+    CO4Menu = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
+
+
     
-
-
-            # pygame.draw.rect(DISPLAYSURF, BLACK, (left, top, BUTTONSIZE, BUTTONSIZE))
-
 def drawGameOverScreen(winner):
     pygame.display.update()
     checkForQuit()
@@ -266,48 +272,6 @@ def drawGameOverScreen(winner):
                 return
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
-def drawWelcomeScreen():
-    
-    while True:
-        DISPLAYSURF.blit(backgroundImage, (0,0))
-
-        drawBookMenu()
-        menuSelection()
-        
-        checkForQuit()
-        pygame.display.update()
-        FPSCLOCK.tick(FPS)
-
-def drawBookMenu():
-    
-    CO1BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO1Button.png'))
-    CO2BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO2Button.png'))
-    CO3BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO3Button.png'))
-    CO4BookImg = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
-
-    CO1MenuPos = (266, 138)
-    CO2MenuPos = (622, 138)
-    CO3MenuPos = (266, 450)
-    CO4MenuPos = (622, 450)
-
-    DISPLAYSURF.blit(CO1BookImg, CO1MenuPos)
-    DISPLAYSURF.blit(CO2BookImg, CO2MenuPos)
-    DISPLAYSURF.blit(CO3BookImg, CO3MenuPos)
-    DISPLAYSURF.blit(CO4BookImg, CO4MenuPos)
-
-def menuSelection():
-    CO1Rect = pygame.Rect(266, 138, 404, 318)
-    CO2Rect = pygame.Rect(622, 138, 760, 318)
-    CO3Rect = pygame.Rect(266, 450, 404, 630)
-    CO4Rect = pygame.Rect(622, 450, 760, 630)
-
-    for event in pygame.event.get():
-        if event.type == MOUSEMOTION:
-            mousex, mousey = event.pos
-            if (mousex, mousey) == CO1Rect.collidepoint:
-                print('Collision detectid')
-
 
 def explosionAnimation(team):
     if team == 'teamA':
@@ -415,11 +379,11 @@ def game():
     winSound = pygame.mixer.Sound(winSoundPath)
 
     while True:
-        drawWelcomeScreen()
         gameWinner = main()            
         drawGameOverScreen(gameWinner)
 
 if __name__ == "__main__":
+    
     game()
 
     # print(fetchImages(comeOnVer, comeOnUnits))
