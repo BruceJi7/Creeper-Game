@@ -28,13 +28,14 @@ WHITE           =(255, 255, 255)
 BLACK           =(  0,   0,   0)
 GREEN           =(  0, 200,   0)
 
-comeOnVer = 'CO1'
+# comeOnVer = ''
 comeOnUnits = ('u1', 'u2')
 
 
 
 
-def main():
+def main(bookVersion):
+    comeOnVer = bookVersion
 
     global DISPLAYSURF, creeperSound, explosionImgs, FPSCLOCK
     
@@ -175,7 +176,8 @@ def leftTopCoordsOfBox (boxx, boxy):
     return (left, top)
 
 
-def fetchImages(comeOnVer, comeOnUnits):
+def fetchImages(bookVersion, comeOnUnits):
+    comeOnVer = bookVersion
     firstUnitPath = os.path.join(workingDir, comeOnVer, comeOnUnits[0])
     secondUnitPath = os.path.join(workingDir, comeOnVer, comeOnUnits[1])
     
@@ -239,12 +241,43 @@ def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
 
 def welcomeScreen():
     menuBoard = ['CO1', 'CO2', 'CO3', 'CO4']
-    menuY = '1'
+    menuY = 1
 
     CO1Menu = pygame.image.load(os.path.join(baseImagePath, 'CO1Button.png'))
     CO2Menu = pygame.image.load(os.path.join(baseImagePath, 'CO2Button.png'))
     CO3Menu = pygame.image.load(os.path.join(baseImagePath, 'CO3Button.png'))
     CO4Menu = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
+
+    menuList = [CO1Menu, CO2Menu, CO3Menu, CO4Menu]
+    while True:
+        checkForQuit()
+        DISPLAYSURF.blit(backgroundImage, (0,0))
+        for menuX in range(0, len(menuBoard)):
+            menuIcon = menuList[menuX]
+            left, top = leftTopCoordsOfBox(menuX, menuY)
+            DISPLAYSURF.blit(menuIcon, (left, top))
+        mouseClicked = False
+        for event in pygame.event.get(): # Event handling loop
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == MOUSEMOTION:
+                mousex, mousey = event.pos
+            elif event.type == MOUSEBUTTONUP:
+                mousex, mousey = event.pos
+                mouseClicked = True
+
+        boxx, boxy = getBoxAtPixel(mousex, mousey)
+        if boxx != None and boxy != None:
+            # The mouse is currently over a box.
+            if menuBoard[boxx] and boxy == menuY:
+                drawHighlightBox(boxx, boxy)
+
+                if mouseClicked == True:
+                    return menuBoard[boxx]
+            
+                        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
 
 
     
@@ -360,7 +393,7 @@ def game():
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), pygame.RESIZABLE, display=0)
     pygame.display.set_caption('The Creeper Game')
 
-    coverImages = fetchImages(comeOnVer, comeOnUnits)
+    # coverImages = fetchImages(comeOnVer, comeOnUnits)
 
     backgroundPath = os.path.join(baseImagePath, 'background.png')
     backgroundImage = pygame.image.load(backgroundPath)
@@ -379,7 +412,8 @@ def game():
     winSound = pygame.mixer.Sound(winSoundPath)
 
     while True:
-        gameWinner = main()            
+        comeOnVer = welcomeScreen()
+        gameWinner = main(comeOnVer)            
         drawGameOverScreen(gameWinner)
 
 if __name__ == "__main__":
