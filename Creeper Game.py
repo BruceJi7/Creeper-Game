@@ -32,7 +32,7 @@ BLACK           =(  0,   0,   0)
 GREEN           =(  0, 200,   0)
 
 comeOnVer = 'CO2'
-comeOnUnits = ('u4', 'u5')
+comeOnUnits = ('u3', 'u6')
 
 
 
@@ -175,7 +175,7 @@ def main():
 
             
         elif gameState == 'STOP': #Game is in suspended 'STOP' mode
-            
+            print('winner')
             drawGameOverScreen(winner)
 
 
@@ -268,7 +268,7 @@ def drawGameOverScreen(winner):
     elif winner == 'teamB':
         winnerImagePath = os.path.join(baseImagePath, 'winTileB.png')
     
-    elif winner == 'both':
+    else: 
         winnerImagePath = os.path.join(baseImagePath, 'winTileAll.png')
 
     winnerImage = pygame.image.load(winnerImagePath)
