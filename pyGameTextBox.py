@@ -57,7 +57,7 @@ def drawTextBox(width, height, xpos, ypos, color):
 
         
                 if pygame.key.get_focused():
-                    key = event.key
+                    key = event.key()
                     print(pygame.key.name(key))      
         pygame.display.update()
         

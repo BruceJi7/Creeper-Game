@@ -29,14 +29,14 @@ BLACK           =(  0,   0,   0)
 GREEN           =(  0, 200,   0)
 
 # comeOnVer = ''
-comeOnUnits = ('u1', 'u2')
+# comeOnUnits = ('u1', 'u2')
 
 
 
 
-def main(bookVersion):
+def main(bookVersion, unitsList):
     comeOnVer = bookVersion
-
+    comeOnUnits = unitsList
     global DISPLAYSURF, creeperSound, explosionImgs, FPSCLOCK
     
     pygame.init()
@@ -175,6 +175,11 @@ def leftTopCoordsOfBox (boxx, boxy):
     top = boxy * (BUTTONSIZE + BUTTONGAPSIZE) + YMARGIN
     return (left, top)
 
+def centreCoordsOfBox(boxx, boxy):
+    left = boxx * (BUTTONSIZE + BUTTONGAPSIZE) + (BUTTONSIZE/2) + XMARGIN
+    top = boxy * (BUTTONSIZE + BUTTONGAPSIZE) +  (BUTTONSIZE/2) + YMARGIN
+    return (left, top)
+
 
 def fetchImages(bookVersion, comeOnUnits):
     comeOnVer = bookVersion
@@ -239,7 +244,7 @@ def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
         currentTeamImg = teamBTurnImg
     DISPLAYSURF.blit(currentTeamImg, (318, 690))
 
-def welcomeScreen():
+def selectVersionScreen():
     menuBoard = ['CO1', 'CO2', 'CO3', 'CO4']
     menuY = 1
 
@@ -249,6 +254,7 @@ def welcomeScreen():
     CO4Menu = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
 
     menuList = [CO1Menu, CO2Menu, CO3Menu, CO4Menu]
+    mousex, mousey = 0, 0
     while True:
         checkForQuit()
         DISPLAYSURF.blit(backgroundImage, (0,0))
@@ -279,6 +285,53 @@ def welcomeScreen():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
+def selectUnitScreen():
+    menuBoard = [['u1', 'u2', 'u3', 'u4'], ['u5', 'u6', 'u7', 'u8']]
+    UNITFONT = pygame.font.Font('freesansbold.ttf', 40)
+    mousex, mousey = 0, 0
+    
+
+    while True:
+        checkForQuit()
+        DISPLAYSURF.blit(backgroundImage, (0,0))
+        for menuY in range(0, len(menuBoard)):
+            for menuX in range(0, len(menuBoard[menuY])):
+                unitText = menuBoard[menuY][menuX]
+                wordSurf = UNITFONT.render(unitText, 1, WHITE)
+                wordRect = wordSurf.get_rect()
+                
+                left, top = centreCoordsOfBox(menuX, menuY)
+                wordRect.center = (left, top)
+
+                DISPLAYSURF.blit(wordSurf, wordRect)
+
+        mouseClicked = False
+        for event in pygame.event.get(): # Event handling loop
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == MOUSEMOTION:
+                mousex, mousey = event.pos
+            elif event.type == MOUSEBUTTONUP:
+                mousex, mousey = event.pos
+                mouseClicked = True
+
+        boxx, boxy = getBoxAtPixel(mousex, mousey)
+        if boxx != None and boxy != None:
+
+            if boxy <= 1:
+                # The mouse is currently over a box.
+                if menuBoard[boxy] and menuBoard[boxy][boxx]:
+                    drawHighlightBox(boxx, boxy)
+
+                    if mouseClicked == True:
+                        if boxy <=1:
+
+                            print(menuBoard[boxy][boxx])
+                            return menuBoard[boxy][boxx]
+
+                        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
 
     
 def drawGameOverScreen(winner):
@@ -392,6 +445,8 @@ def game():
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), pygame.RESIZABLE, display=0)
     pygame.display.set_caption('The Creeper Game')
+    mousex = 0
+    mousey = 0
 
     # coverImages = fetchImages(comeOnVer, comeOnUnits)
 
@@ -411,10 +466,18 @@ def game():
     safeSound = pygame.mixer.Sound(safeSoundPath)
     winSound = pygame.mixer.Sound(winSoundPath)
 
+    
     while True:
-        comeOnVer = welcomeScreen()
-        gameWinner = main(comeOnVer)            
-        drawGameOverScreen(gameWinner)
+        comeOnVer = selectVersionScreen()
+
+        firstSelectedUnit = selectUnitScreen()
+        secondSelectedUnit = selectUnitScreen()
+
+        comeOnUnits = (firstSelectedUnit, secondSelectedUnit)
+
+        while True:
+            gameWinner = main(comeOnVer, comeOnUnits)            
+            drawGameOverScreen(gameWinner)
 
 if __name__ == "__main__":
     

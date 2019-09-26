@@ -1,12 +1,12 @@
-The tasks to make the 'menu' version function are as follows:
 
-- Create a 'intro page' function that draws a menu from where we can select different books and units.
+---
+19/9/26
 
-- Modify game over screen so that clicking on the screen can exit it:
-	- On click, return from the game over function
+Creeper Game now has functional unit selection menu. The game maintains the same units until it is exited.
+Things to improve include:
 
+- in the game over screen, a highlight box persists. Clear it.
 
-- Remove the game state variable in favour of a game function that contains a loop.
-	- If the players win, return from the 'main' function, move onto 'game over' function
+- Add a counter for how many creepers are remaining.
 
-
+- Make the unit labels look a bit nicer.
