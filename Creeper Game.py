@@ -163,7 +163,6 @@ def main(bookVersion, unitsList):
             
 
 
-
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
@@ -346,7 +345,7 @@ def drawGameOverScreen(winner):
     elif winner == 'teamB':
         winnerImagePath = os.path.join(baseImagePath, 'winTileB.png')
     
-    elif winner == 'both':
+    else: 
         winnerImagePath = os.path.join(baseImagePath, 'winTileAll.png')
 
     winnerImage = pygame.image.load(winnerImagePath)
