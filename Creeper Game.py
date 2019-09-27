@@ -174,11 +174,21 @@ def leftTopCoordsOfBox (boxx, boxy):
     top = boxy * (BUTTONSIZE + BUTTONGAPSIZE) + YMARGIN
     return (left, top)
 
+def leftTopCoordsOfSmallBox(boxx, boxy):
+    left = boxx * (BUTTONSIZE + BUTTONGAPSIZE)/2 + XMARGIN
+    top = boxy * (BUTTONSIZE + BUTTONGAPSIZE)/2 + YMARGIN
+    return (left, top)
+    
+
 def centreCoordsOfBox(boxx, boxy):
     left = boxx * (BUTTONSIZE + BUTTONGAPSIZE) + (BUTTONSIZE/2) + XMARGIN
     top = boxy * (BUTTONSIZE + BUTTONGAPSIZE) +  (BUTTONSIZE/2) + YMARGIN
     return (left, top)
 
+def centreCoordsOfSmallBox(boxx, boxy):
+    left = boxx * (BUTTONSIZE + BUTTONGAPSIZE)/2 + (BUTTONSIZE/4) + XMARGIN
+    top = boxy * (BUTTONSIZE + BUTTONGAPSIZE)/2 +  (BUTTONSIZE/4) + YMARGIN
+    return (left, top)
 
 def fetchImages(bookVersion, comeOnUnits):
     comeOnVer = bookVersion
@@ -285,50 +295,55 @@ def selectVersionScreen():
         FPSCLOCK.tick(FPS)
 
 def selectUnitScreen():
-    menuBoard = [['u1', 'u2', 'u3', 'u4'], ['u5', 'u6', 'u7', 'u8']]
-    UNITFONT = pygame.font.Font('freesansbold.ttf', 40)
+    menuBoard = ['u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8']
+    UNITFONT = pygame.font.Font('freesansbold.ttf', 20)
     mousex, mousey = 0, 0
+    firstUnitMenuY = 1
+    firstUnitChoice = None
+
+    secondUnitMenuY = 5
+    secondUnitChoice = None
     
 
     while True:
         checkForQuit()
         DISPLAYSURF.blit(backgroundImage, (0,0))
-        for menuY in range(0, len(menuBoard)):
-            for menuX in range(0, len(menuBoard[menuY])):
-                unitText = menuBoard[menuY][menuX]
-                wordSurf = UNITFONT.render(unitText, 1, WHITE)
-                wordRect = wordSurf.get_rect()
-                
-                left, top = centreCoordsOfBox(menuX, menuY)
-                wordRect.center = (left, top)
+        
+        firstUnitTitle = 'Select first unit to play from:'
+        firstUnitSurf = UNITFONT.render(firstUnitTitle, 1, WHITE)
+        firstUnitRect = firstUnitSurf.get_rect()
+        left, top = leftTopCoordsOfSmallBox(0, 0)
+        firstUnitRect.topleft = (left, top+10)
+        DISPLAYSURF.blit(firstUnitSurf, firstUnitRect)
 
-                DISPLAYSURF.blit(wordSurf, wordRect)
+        for menuX in range(0, len(menuBoard)):
+            unitText = menuBoard[menuX]
+            wordSurf = UNITFONT.render(unitText, 1, WHITE)
+            wordRect = wordSurf.get_rect()
+            
+            left, top = centreCoordsOfSmallBox(menuX, firstUnitMenuY)
+            wordRect.center = (left, top)
 
-        mouseClicked = False
-        for event in pygame.event.get(): # Event handling loop
-            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-                terminate()
-            elif event.type == MOUSEMOTION:
-                mousex, mousey = event.pos
-            elif event.type == MOUSEBUTTONUP:
-                mousex, mousey = event.pos
-                mouseClicked = True
+            DISPLAYSURF.blit(wordSurf, wordRect)
+        
+        secondUnitTitle = 'Select second unit to play from:'
+        secondUnitSurf = UNITFONT.render(secondUnitTitle, 1, WHITE)
+        secondUnitRect = secondUnitSurf.get_rect()
+        left, top = leftTopCoordsOfSmallBox(0, 4)
+        secondUnitRect.topleft = (left, top+10)
+        DISPLAYSURF.blit(secondUnitSurf, secondUnitRect)
 
-        boxx, boxy = getBoxAtPixel(mousex, mousey)
-        if boxx != None and boxy != None:
 
-            if boxy <= 1:
-                # The mouse is currently over a box.
-                if menuBoard[boxy] and menuBoard[boxy][boxx]:
-                    drawHighlightBox(boxx, boxy)
+        for menuX in range(0, len(menuBoard)):
+            unitText = menuBoard[menuX]
+            wordSurf = UNITFONT.render(unitText, 1, WHITE)
+            wordRect = wordSurf.get_rect()
+            
+            left, top = centreCoordsOfSmallBox(menuX, secondUnitMenuY)
+            wordRect.center = (left, top)
 
-                    if mouseClicked == True:
-                        if boxy <=1:
-
-                            print(menuBoard[boxy][boxx])
-                            return menuBoard[boxy][boxx]
-
-                        
+            DISPLAYSURF.blit(wordSurf, wordRect)
+                     
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
@@ -378,6 +393,15 @@ def getBoxAtPixel(x, y):
         for boxy in range(4):
             left, top = leftTopCoordsOfBox(boxx, boxy)
             boxRect = pygame.Rect(left, top, BUTTONSIZE, BUTTONSIZE)
+            if boxRect.collidepoint(x, y):
+                return (boxx, boxy)
+    return (None, None)
+
+def getSmallBoxAtPixel(x, y):
+    for boxx in range(8):
+        for boxy in range(8):
+            left, top = leftTopCoordsOfSmallBox(boxx, boxy)
+            boxRect = pygame.Rect(left, top, BUTTONSIZE/2, BUTTONSIZE/2)
             if boxRect.collidepoint(x, y):
                 return (boxx, boxy)
     return (None, None)
@@ -467,7 +491,7 @@ def game():
 
     
     while True:
-        comeOnVer = selectVersionScreen()
+        # comeOnVer = selectVersionScreen()
 
         firstSelectedUnit = selectUnitScreen()
         secondSelectedUnit = selectUnitScreen()
