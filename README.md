@@ -4,7 +4,9 @@ Creeper Game as used at work. Educational Purposes!
 ---
 
 The Creeper Game is a minecraft-themed game that also uses materials from the Neung Yule Come On series of books.
+
 It is a TEFL game for two teams.
+
 
 There is a 4x4 grid of pictures in the middle of the screen.
 Each team builds a house on their side of the board by finding blocks.
