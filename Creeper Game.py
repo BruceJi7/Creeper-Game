@@ -27,6 +27,7 @@ YMARGIN = int((WINDOWHEIGHT - 128 * 5))
 WHITE           =(255, 255, 255)
 BLACK           =(  0,   0,   0)
 GREEN           =(  0, 200,   0)
+RED             =(255,   0,   0)
 
 # comeOnVer = ''
 # comeOnUnits = ('u1', 'u2')
@@ -302,11 +303,11 @@ def selectVersionScreen():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-def selectUnitScreen():
+def selectUnitScreen(choice=None):
     menuBoard = [['u1', 'u2', 'u3', 'u4'], ['u5', 'u6', 'u7', 'u8']]
     UNITFONT = pygame.font.Font('freesansbold.ttf', 40)
     mousex, mousey = 0, 0
-    
+    selection = [0, 0]
 
     while True:
         checkForQuit()
@@ -342,11 +343,14 @@ def selectUnitScreen():
 
                     if mouseClicked == True:
                         if boxy <=1:
+                            selection[0] = boxx
+                            selection[1] = boxy
 
-                            print(menuBoard[boxy][boxx])
-                            return menuBoard[boxy][boxx]
+                            return menuBoard[boxy][boxx], selection
 
-                        
+        if choice:
+            drawSelectionBox(choice[0], choice[1])
+
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
@@ -403,6 +407,11 @@ def getBoxAtPixel(x, y):
 
 def drawHighlightBox(boxx, boxy):
     hiColour = WHITE
+    left, top = leftTopCoordsOfBox(boxx, boxy)
+    pygame.draw.rect(DISPLAYSURF, hiColour, (left - 5, top - 5, BUTTONSIZE + 10, BUTTONSIZE + 10), 4)
+
+def drawSelectionBox(boxx, boxy):
+    hiColour = RED
     left, top = leftTopCoordsOfBox(boxx, boxy)
     pygame.draw.rect(DISPLAYSURF, hiColour, (left - 5, top - 5, BUTTONSIZE + 10, BUTTONSIZE + 10), 4)
 
@@ -488,8 +497,8 @@ def game():
     while True:
         comeOnVer = selectVersionScreen()
 
-        firstSelectedUnit = selectUnitScreen()
-        secondSelectedUnit = selectUnitScreen()
+        firstSelectedUnit, firtSelectionChoice = selectUnitScreen()
+        secondSelectedUnit, secondSelectedChoice = selectUnitScreen(firtSelectionChoice)
 
         comeOnUnits = (firstSelectedUnit, secondSelectedUnit)
 
