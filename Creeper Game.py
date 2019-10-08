@@ -77,12 +77,14 @@ def main(bookVersion, unitsList):
         'teamA' : 0,
         'teamB' : 0,
     }
+
     teamOrder = generateTeamOrder()
     turnCount = 0
     gameState = 'PLAY'
     winner = None
     revealedCount = 0
     roundCount = 0
+    creepersRemaining = 4
 
 
     # Main game loop
@@ -93,6 +95,7 @@ def main(bookVersion, unitsList):
         
         drawScoreHouse(scores)
         teamTurn = teamOrder[turnCount]
+        drawCreepersRemaining(creepersRemaining)
         
         # if gameState == 'PLAY':
         drawBoard(gameBoard, coverImages, revealedBoxes, teamTurn)      
@@ -123,49 +126,50 @@ def main(bookVersion, unitsList):
                         
                     elif gameBoard[boxx][boxy] == 'C': #If you find a creeper...
                         scores[teamTurn] = 0
+                        creepersRemaining -= 1
                         pygame.display.update()
                         explosionAnimation(teamTurn)
                     turnCount += 1
                     turnsTaken[teamTurn] += 1
                     if turnCount > 1:
                         turnCount = 0
+        pygame.display.update()
 
-            if turnsTaken['teamA'] == turnsTaken['teamB']: # The teams must take the same number of turns
+        if turnsTaken['teamA'] == turnsTaken['teamB']: # The teams must take the same number of turns
 
 
-                if revealedCount < 16: #Checks to see if someone has a winning score
+            if revealedCount < 16: #Checks to see if someone has a winning score
+                
                     
-                     
-                        if scores['teamA'] == 4 and scores['teamB'] == 4:
-                            winner = 'both'
-                            winSound.play()
-                            return winner
-                        
-                        elif scores['teamA'] == 4 and scores['teamB'] != 4:
-                            winner = 'teamA'
-                            winSound.play()
-                            return winner
-
-                        elif scores['teamB'] == 4 and scores['teamA'] != 4:
-                            winner = 'teamB'
-                            winSound.play()
-                            return winner
-
-
-                elif revealedCount == 16: # If the board is fully revealed...
-                    winSound.play()
-                    if scores['teamA'] > scores['teamB']:
+                    if scores['teamA'] == 4 and scores['teamB'] == 4:
+                        winner = 'both'
+                        winSound.play()
+                        return winner
+                    
+                    elif scores['teamA'] == 4 and scores['teamB'] != 4:
                         winner = 'teamA'
-                    elif scores['teamB'] > scores['teamA']:
+                        winSound.play()
+                        return winner
+
+                    elif scores['teamB'] == 4 and scores['teamA'] != 4:
                         winner = 'teamB'
-                    return winner
+                        winSound.play()
+                        return winner
+
+
+            elif revealedCount == 16: # If the board is fully revealed...
+                winSound.play()
+                if scores['teamA'] > scores['teamB']:
+                    winner = 'teamA'
+                elif scores['teamB'] > scores['teamA']:
+                    winner = 'teamB'
+                return winner
 
             
 
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
 
         
 def leftTopCoordsOfBox (boxx, boxy):
@@ -239,9 +243,23 @@ def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
                 DISPLAYSURF.blit(coverBoard[boxx][boxy], ((left + BUTTONGAPSIZE/4), (top + BUTTONOFFSET)))
     if currentTeam == 'teamA':
         currentTeamImg = teamATurnImg
+        DISPLAYSURF.blit(currentTeamImg, (0, 660))
     elif currentTeam == 'teamB':
         currentTeamImg = teamBTurnImg
-    DISPLAYSURF.blit(currentTeamImg, (318, 690))
+        DISPLAYSURF.blit(currentTeamImg, (WINDOWWIDTH-256, 660))
+
+def drawCreepersRemaining(creepers):
+    creeperFont = pygame.font.SysFont('system', 70)
+    creeperTextSurf = creeperFont.render(str(creepers), 1, WHITE)
+    creeperTextRect = creeperTextSurf.get_rect()
+    creeperTextRect.topleft = ((WINDOWWIDTH/2 + 10), 670)
+
+    creeperIcon = pygame.image.load(os.path.join(baseImagePath, 'CreepersRemainingIcon.png'))
+    creeperRect = creeperIcon.get_rect()
+    creeperRect.topleft = ((WINDOWWIDTH/2 -90), 650)
+
+    DISPLAYSURF.blit(creeperTextSurf, creeperTextRect)
+    DISPLAYSURF.blit(creeperIcon, creeperRect)
 
 def selectVersionScreen():
     menuBoard = ['CO1', 'CO2', 'CO3', 'CO4']
@@ -335,7 +353,7 @@ def selectUnitScreen():
     
 def drawGameOverScreen(winner):
     pygame.display.update()
-    checkForQuit()
+    
 
     winnerImagePath = None
     
@@ -351,6 +369,7 @@ def drawGameOverScreen(winner):
     winnerImage = pygame.image.load(winnerImagePath)
 
     while True:    
+        checkForQuit()
         DISPLAYSURF.blit(winnerImage, ((128*2), (128)))
         for event in pygame.event.get():
             if event.type == MOUSEBUTTONUP:
