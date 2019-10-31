@@ -87,6 +87,8 @@ def main(bookVersion, unitsList):
     roundCount = 0
     creepersRemaining = 4
 
+    
+
 
     # Main game loop
     while True:
@@ -145,17 +147,20 @@ def main(bookVersion, unitsList):
                     if scores['teamA'] == 4 and scores['teamB'] == 4:
                         winner = 'both'
                         winSound.play()
-                        return winner
+                        pygame.display.update()
+                        return winner, scores
                     
                     elif scores['teamA'] == 4 and scores['teamB'] != 4:
                         winner = 'teamA'
                         winSound.play()
-                        return winner
+                        pygame.display.update()
+                        return winner, scores
 
                     elif scores['teamB'] == 4 and scores['teamA'] != 4:
                         winner = 'teamB'
                         winSound.play()
-                        return winner
+                        pygame.display.update()
+                        return winner, scores
 
 
             elif revealedCount == 16: # If the board is fully revealed...
@@ -164,10 +169,11 @@ def main(bookVersion, unitsList):
                     winner = 'teamA'
                 elif scores['teamB'] > scores['teamA']:
                     winner = 'teamB'
-                return winner
+                pygame.display.update()
+                return winner, scores
 
             
-
+        
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -355,7 +361,8 @@ def selectUnitScreen(choice=None):
         FPSCLOCK.tick(FPS)
 
     
-def drawGameOverScreen(winner):
+def drawGameOverScreen(winner, scores):
+    drawScoreHouse(scores)
     pygame.display.update()
     
 
@@ -503,8 +510,8 @@ def game():
         comeOnUnits = (firstSelectedUnit, secondSelectedUnit)
 
         while True:
-            gameWinner = main(comeOnVer, comeOnUnits)            
-            drawGameOverScreen(gameWinner)
+            gameWinner, scores = main(comeOnVer, comeOnUnits)            
+            drawGameOverScreen(gameWinner, scores)
 
 if __name__ == "__main__":
     
