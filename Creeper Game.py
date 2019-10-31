@@ -32,6 +32,11 @@ RED             =(255,   0,   0)
 # comeOnVer = ''
 # comeOnUnits = ('u1', 'u2')
 
+class team():
+    def __init__(self, name, score, turns):
+        self.name = name
+        self.score = score
+        self.turns = turns
 
 
 
@@ -70,18 +75,9 @@ def main(bookVersion, unitsList):
     winSound = pygame.mixer.Sound(winSoundPath)
 
 
-    scores = {
-        'teamA' : 0,
-        'teamB' : 0,
-    }
-    turnsTaken = {
-        'teamA' : 0,
-        'teamB' : 0,
-    }
 
     teamOrder = generateTeamOrder()
-    turnCount = 0
-    gameState = 'PLAY'
+    teamTurn = 0
     winner = None
     revealedCount = 0
     roundCount = 0
@@ -96,12 +92,16 @@ def main(bookVersion, unitsList):
 
         DISPLAYSURF.blit(backgroundImage, (0,0))
         
-        drawScoreHouse(scores)
-        teamTurn = teamOrder[turnCount]
+        drawScoreHouse(teamOrder)
+        
+        if teamTurn > 1:
+            teamTurn = 0
+        
+        activeTeam = teamOrder[teamTurn]
         drawCreepersRemaining(creepersRemaining)
         
         # if gameState == 'PLAY':
-        drawBoard(gameBoard, coverImages, revealedBoxes, teamTurn)      
+        drawBoard(gameBoard, coverImages, revealedBoxes, activeTeam.name)      
         for event in pygame.event.get(): # Event handling loop
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
@@ -123,54 +123,62 @@ def main(bookVersion, unitsList):
                 
                     #This part operates the team scoring
                     if gameBoard[boxx][boxy] == 'O': # If you find stone...
-                        scores[teamTurn] += 1
+                        activeTeam.score += 1
                         safeSound.play()
 
                         
                     elif gameBoard[boxx][boxy] == 'C': #If you find a creeper...
-                        scores[teamTurn] = 0
+                        activeTeam.score = 0
                         creepersRemaining -= 1
                         pygame.display.update()
-                        explosionAnimation(teamTurn)
-                    turnCount += 1
-                    turnsTaken[teamTurn] += 1
-                    if turnCount > 1:
-                        turnCount = 0
+                        explosionAnimation(activeTeam.name)
+                    teamTurn += 1
+                    activeTeam.turns += 1
+                    
         pygame.display.update()
 
-        if turnsTaken['teamA'] == turnsTaken['teamB']: # The teams must take the same number of turns
+        winState, winner = checkWin(teamOrder, creepersRemaining, revealedCount)
+
+        if winState:
+            winSound.play()
+            pygame.display.update()
+            return winner, teamOrder
+
+        
+
+        # if turnsTaken['teamA'] == turnsTaken['teamB']: # The teams must take the same number of turns
 
 
-            if revealedCount < 16: #Checks to see if someone has a winning score
+        #     if revealedCount < 16: #Checks to see if someone has a winning score
                 
                     
-                    if scores['teamA'] == 4 and scores['teamB'] == 4:
-                        winner = 'both'
-                        winSound.play()
-                        pygame.display.update()
-                        return winner, scores
+        #             if scores['teamA'] == 4 and scores['teamB'] == 4:
+        #                 winner = 'both'
+        #                 winSound.play()
+        #                 pygame.display.update()
+        #                 return winner, scores
                     
-                    elif scores['teamA'] == 4 and scores['teamB'] != 4:
-                        winner = 'teamA'
-                        winSound.play()
-                        pygame.display.update()
-                        return winner, scores
+        #             elif scores['teamA'] == 4 and scores['teamB'] != 4:
+        #                 winner = 'teamA'
+        #                 winSound.play()
+        #                 pygame.display.update()
+        #                 return winner, scores
 
-                    elif scores['teamB'] == 4 and scores['teamA'] != 4:
-                        winner = 'teamB'
-                        winSound.play()
-                        pygame.display.update()
-                        return winner, scores
+        #             elif scores['teamB'] == 4 and scores['teamA'] != 4:
+        #                 winner = 'teamB'
+        #                 winSound.play()
+        #                 pygame.display.update()
+        #                 return winner, scores
 
 
-            elif revealedCount == 16: # If the board is fully revealed...
-                winSound.play()
-                if scores['teamA'] > scores['teamB']:
-                    winner = 'teamA'
-                elif scores['teamB'] > scores['teamA']:
-                    winner = 'teamB'
-                pygame.display.update()
-                return winner, scores
+        #     elif revealedCount == 16: # If the board is fully revealed...
+        #         winSound.play()
+        #         if scores['teamA'] > scores['teamB']:
+        #             winner = 'teamA'
+        #         elif scores['teamB'] > scores['teamA']:
+        #             winner = 'teamB'
+        #         pygame.display.update()
+        #         return winner, scores
 
             
         
@@ -178,7 +186,33 @@ def main(bookVersion, unitsList):
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-        
+def checkWin(teamList, creepers, revealed):
+    firstTeam = teamList[0]
+    secondTeam = teamList[1]
+    win = False
+    winner = None
+    if revealed == 16 or creepers == 0:
+        win = True
+        if firstTeam.score == secondTeam.score:
+            winner = 'both'
+        elif secondTeam.score > firstTeam.score:
+            winner = secondTeam.name
+        else:
+            winner = firstTeam.name
+    else:
+        if firstTeam.score ==4 and secondTeam.score == 4:
+            win = True
+            winner = 'both'
+
+        elif firstTeam.score == 4 and secondTeam.score < 3:
+            win = True
+            winner = firstTeam.name
+        elif secondTeam.score == 4:
+            win = True
+            winner = secondTeam.name
+    
+    return win, winner
+             
 def leftTopCoordsOfBox (boxx, boxy):
     # Convert board coordinates to pixel coordinates
     left = boxx * (BUTTONSIZE + BUTTONGAPSIZE) + XMARGIN
@@ -189,7 +223,6 @@ def centreCoordsOfBox(boxx, boxy):
     left = boxx * (BUTTONSIZE + BUTTONGAPSIZE) + (BUTTONSIZE/2) + XMARGIN
     top = boxy * (BUTTONSIZE + BUTTONGAPSIZE) +  (BUTTONSIZE/2) + YMARGIN
     return (left, top)
-
 
 def fetchImages(bookVersion, comeOnUnits):
     comeOnVer = bookVersion
@@ -226,7 +259,6 @@ def fetchImages(bookVersion, comeOnUnits):
     return [rowA, rowB, rowC, rowD]
 
     return selectedImages
-
 
 def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
     safeImg = pygame.image.load(os.path.join(baseImagePath, 'cobbleStone.png'))
@@ -359,12 +391,9 @@ def selectUnitScreen(choice=None):
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
     
-def drawGameOverScreen(winner, scores):
-    drawScoreHouse(scores)
-    pygame.display.update()
-    
+def drawGameOverScreen(winner, teams):
+    drawScoreHouse(teams)
 
     winnerImagePath = None
     
@@ -422,18 +451,25 @@ def drawSelectionBox(boxx, boxy):
     left, top = leftTopCoordsOfBox(boxx, boxy)
     pygame.draw.rect(DISPLAYSURF, hiColour, (left - 5, top - 5, BUTTONSIZE + 10, BUTTONSIZE + 10), 4)
 
-def drawScoreHouse(scoreDict):
+def drawScoreHouse(teamList):
 
-    teamAScore = scoreDict['teamA']
+    firstTeam = teamList[0]
+    secondTeam = teamList[1]
+
+    if firstTeam.name == 'teamA':
+        teamAScore = firstTeam.score
+        teamBScore = secondTeam.score
+    else:
+        teamBScore = firstTeam.score
+        teamAScore = secondTeam.score
+
     teamAHouseStateNumber = str(teamAScore).zfill(3)
     teamAHouseStateFileName = f'houseState_{teamAHouseStateNumber}.png'
     teamAHouseImagePath = os.path.join(baseImagePath, teamAHouseStateFileName)
     
 
     teamAHouseCoords = (0, 128*2)
-    
 
-    teamBScore = scoreDict['teamB']
     teamBHouseStateNumber = str(teamBScore).zfill(3)
     teamBHouseStateFileName = f'houseState_{teamBHouseStateNumber}.png'
     teamBHouseImagePath = os.path.join(baseImagePath, teamBHouseStateFileName)
@@ -454,7 +490,7 @@ def generateRevealedBoxesData(val):
     return revealedBoxes
 
 def generateTeamOrder():
-    teams = ['teamA', 'teamB']
+    teams = [team('teamA', 0, 0), team('teamB', 0, 0)]
     random.shuffle(teams)
     return teams
 
