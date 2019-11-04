@@ -300,16 +300,54 @@ def drawCreepersRemaining(creepers):
     DISPLAYSURF.blit(creeperTextSurf, creeperTextRect)
     DISPLAYSURF.blit(creeperIcon, creeperRect)
 
-def selectVersionScreen():
-    menuBoard = ['CO1', 'CO2', 'CO3', 'CO4']
-    menuY = 1
+def selectSeries():
 
-    CO1Menu = pygame.image.load(os.path.join(baseImagePath, 'CO1Button.png'))
-    CO2Menu = pygame.image.load(os.path.join(baseImagePath, 'CO2Button.png'))
-    CO3Menu = pygame.image.load(os.path.join(baseImagePath, 'CO3Button.png'))
-    CO4Menu = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
+    COButton = pygame.image.load(os.path.join(baseImagePath, 'BookMenuCO.png'))
+    CORect = COButton.get_rect()
+    CORect.topleft = (XMARGIN, YMARGIN)
 
-    menuList = [CO1Menu, CO2Menu, CO3Menu, CO4Menu]
+    EBButton = pygame.image.load(os.path.join(baseImagePath, 'BookMenuEB.png'))
+    EBRect = EBButton.get_rect()
+    EBRect.topleft = (XMARGIN+256, YMARGIN)
+
+
+ 
+
+    while True:
+        checkForQuit()
+        DISPLAYSURF.blit(backgroundImage, (0,0))
+        DISPLAYSURF.blit(COButton, CORect)
+        DISPLAYSURF.blit(EBButton, EBRect)
+        
+        mouseX, mouseY = pygame.mouse.get_pos()
+        mouseClicked = False
+        for event in pygame.event.get():
+            if event.type == MOUSEBUTTONUP:
+                mouseClicked = True
+        
+        if mouseClicked == True:
+            if CORect.collidepoint(mouseX, mouseY):
+                return 'ComeOn'
+
+            elif EBRect.collidepoint(mouseX, mouseY):
+                return 'EngBus'
+
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def selectVersionScreen(whatbook):
+    if whatbook == 'ComeOn':
+
+        menuBoard = ['CO1', 'CO2', 'CO3', 'CO4']
+        menuY = 1
+
+        CO1Menu = pygame.image.load(os.path.join(baseImagePath, 'CO1Button.png'))
+        CO2Menu = pygame.image.load(os.path.join(baseImagePath, 'CO2Button.png'))
+        CO3Menu = pygame.image.load(os.path.join(baseImagePath, 'CO3Button.png'))
+        CO4Menu = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
+
+        menuList = [CO1Menu, CO2Menu, CO3Menu, CO4Menu]
+    
     mousex, mousey = 0, 0
     while True:
         checkForQuit()
@@ -538,7 +576,10 @@ def game():
 
     
     while True:
-        comeOnVer = selectVersionScreen()
+        book = selectSeries()
+        if book == 'EngBus':
+            continue
+        comeOnVer = selectVersionScreen(book)
 
         firstSelectedUnit, firtSelectionChoice = selectUnitScreen()
         secondSelectedUnit, secondSelectedChoice = selectUnitScreen(firtSelectionChoice)
