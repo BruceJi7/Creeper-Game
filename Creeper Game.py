@@ -142,6 +142,8 @@ def main(bookVersion, unitsList):
         if winState:
             winSound.play()
             pygame.display.update()
+            drawCreepersRemaining(creepersRemaining)
+            
             return winner, teamOrder
 
         
@@ -282,10 +284,10 @@ def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
                 DISPLAYSURF.blit(coverBoard[boxx][boxy], ((left + BUTTONGAPSIZE/4), (top + BUTTONOFFSET)))
     if currentTeam == 'teamA':
         currentTeamImg = teamATurnImg
-        DISPLAYSURF.blit(currentTeamImg, (0, 660))
+        DISPLAYSURF.blit(currentTeamImg, (0, 180))
     elif currentTeam == 'teamB':
         currentTeamImg = teamBTurnImg
-        DISPLAYSURF.blit(currentTeamImg, (WINDOWWIDTH-256, 660))
+        DISPLAYSURF.blit(currentTeamImg, (WINDOWWIDTH-256, 180))
 
 def drawCreepersRemaining(creepers):
     creeperFont = pygame.font.SysFont('system', 70)
@@ -431,6 +433,7 @@ def selectUnitScreen(choice=None):
         FPSCLOCK.tick(FPS)
     
 def drawGameOverScreen(winner, teams):
+    DISPLAYSURF.blit(backgroundImage, (0,0))
     drawScoreHouse(teams)
 
     winnerImagePath = None
@@ -469,6 +472,8 @@ def explosionAnimation(team):
         DISPLAYSURF.blit(explosionImgs[step], (location))
         pygame.display.update()
         FPSCLOCK.tick(FPS/2)
+    pygame.display.update()
+    FPSCLOCK.tick(FPS/2)
 
 def getBoxAtPixel(x, y):
     for boxx in range(4):
