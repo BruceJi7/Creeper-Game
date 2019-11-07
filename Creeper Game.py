@@ -33,14 +33,16 @@ RED             =(255,   0,   0)
 # comeOnUnits = ('u1', 'u2')
 
 class team():
-    def __init__(self, name, score, turns):
+    def __init__(self, name, score, turns, overallScore, foundCreeper):
         self.name = name
         self.score = score
         self.turns = turns
+        self.overallScore = overallScore
+        self.foundCreeper = foundCreeper
 
 
 
-def main(bookVersion, unitsList):
+def main(bookVersion, unitsList, teamList):
     comeOnVer = bookVersion
     comeOnUnits = unitsList
     global DISPLAYSURF, creeperSound, explosionImgs, FPSCLOCK
@@ -76,7 +78,10 @@ def main(bookVersion, unitsList):
 
 
 
-    teamOrder = generateTeamOrder()
+    teamOrder = generateTeamOrder(teamList)
+    for team in teamOrder:
+        team.score = 0
+    
     teamTurn = 0
     winner = None
     revealedCount = 0
@@ -93,6 +98,7 @@ def main(bookVersion, unitsList):
         DISPLAYSURF.blit(backgroundImage, (0,0))
         
         drawScoreHouse(teamOrder)
+        drawRoundsWon(teamOrder)
         
         if teamTurn > 1:
             teamTurn = 0
@@ -125,16 +131,22 @@ def main(bookVersion, unitsList):
                     if gameBoard[boxx][boxy] == 'O': # If you find stone...
                         activeTeam.score += 1
                         safeSound.play()
+                        activeTeam.foundCreeper=False
 
                         
                     elif gameBoard[boxx][boxy] == 'C': #If you find a creeper...
                         activeTeam.score = 0
                         creepersRemaining -= 1
+                        if activeTeam.foundCreeper:
+                            activeTeam.overallScore -= 1
+                        else:
+                            activeTeam.foundCreeper = True
                         pygame.display.update()
                         explosionAnimation(activeTeam.name)
                     teamTurn += 1
                     activeTeam.turns += 1
-                    
+        
+        
         pygame.display.update()
 
         winState, winner = checkWin(teamOrder, creepersRemaining, revealedCount)
@@ -197,21 +209,31 @@ def checkWin(teamList, creepers, revealed):
         win = True
         if firstTeam.score == secondTeam.score:
             winner = 'both'
+            firstTeam.overallScore += 1
+            secondTeam.overallScore += 1
         elif secondTeam.score > firstTeam.score:
             winner = secondTeam.name
+            secondTeam.overallScore += 1
+
         else:
             winner = firstTeam.name
+            firstTeam.overallScore += 1
     else:
         if firstTeam.score ==4 and secondTeam.score == 4:
             win = True
             winner = 'both'
+            firstTeam.overallScore += 1
+            secondTeam.overallScore += 1
+            
 
         elif firstTeam.score == 4 and secondTeam.score < 3:
             win = True
             winner = firstTeam.name
+            firstTeam.overallScore += 1
         elif secondTeam.score == 4:
             win = True
             winner = secondTeam.name
+            secondTeam.overallScore += 1
     
     return win, winner
              
@@ -301,6 +323,33 @@ def drawCreepersRemaining(creepers):
 
     DISPLAYSURF.blit(creeperTextSurf, creeperTextRect)
     DISPLAYSURF.blit(creeperIcon, creeperRect)
+
+def drawRoundsWon(teamList):
+    firstTeam = teamList[0]
+    secondTeam = teamList[1]
+
+    if firstTeam.name == 'teamA':
+        teamAScore = firstTeam.overallScore
+        teamBScore = secondTeam.overallScore
+    else:
+        teamAScore = secondTeam.overallScore
+        teamBScore = firstTeam.overallScore
+    
+    scoreFont = pygame.font.SysFont('system', 70)
+
+    teamAScoreSurf = scoreFont.render(str(teamAScore), 1, WHITE)
+    teamAScoreRect = teamAScoreSurf.get_rect()
+    teamAScoreRect.topleft = (215, 130)
+
+
+    teamBScoreSurf = scoreFont.render(str(teamBScore), 1, WHITE)
+    teamBScoreRect = teamBScoreSurf.get_rect()
+    teamBScoreRect.topleft = (785, 130)
+
+    DISPLAYSURF.blit(teamAScoreSurf, teamAScoreRect)
+    DISPLAYSURF.blit(teamBScoreSurf, teamBScoreRect)
+    
+            
 
 def selectSeries():
 
@@ -435,6 +484,7 @@ def selectUnitScreen(choice=None):
 def drawGameOverScreen(winner, teams):
     DISPLAYSURF.blit(backgroundImage, (0,0))
     drawScoreHouse(teams)
+    drawRoundsWon(teams)
 
     winnerImagePath = None
     
@@ -532,8 +582,7 @@ def generateRevealedBoxesData(val):
         revealedBoxes.append([val] * 4)
     return revealedBoxes
 
-def generateTeamOrder():
-    teams = [team('teamA', 0, 0), team('teamB', 0, 0)]
+def generateTeamOrder(teams):
     random.shuffle(teams)
     return teams
 
@@ -561,6 +610,10 @@ def game():
     mousex = 0
     mousey = 0
 
+    teamA = team('teamA', 0, 0, 0, False)
+    teamB = team('teamB', 0, 0, 0, False)
+
+    teams = [teamA, teamB]
     # coverImages = fetchImages(comeOnVer, comeOnUnits)
 
     backgroundPath = os.path.join(baseImagePath, 'background.png')
@@ -592,7 +645,7 @@ def game():
         comeOnUnits = (firstSelectedUnit, secondSelectedUnit)
 
         while True:
-            gameWinner, scores = main(comeOnVer, comeOnUnits)            
+            gameWinner, scores = main(comeOnVer, comeOnUnits, teams)            
             drawGameOverScreen(gameWinner, scores)
 
 if __name__ == "__main__":
