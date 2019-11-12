@@ -33,12 +33,13 @@ RED             =(255,   0,   0)
 # comeOnUnits = ('u1', 'u2')
 
 class team():
-    def __init__(self, name, score, turns, overallScore, foundCreeper):
+    def __init__(self, name, score, turns, overallScore, foundCreeper, creepersFound):
         self.name = name
         self.score = score
         self.turns = turns
         self.overallScore = overallScore
         self.foundCreeper = foundCreeper
+        self.creepersFound = creepersFound
 
 
 
@@ -81,12 +82,14 @@ def main(bookVersion, unitsList, teamList):
     teamOrder = generateTeamOrder(teamList)
     for team in teamOrder:
         team.score = 0
+        team.creepersFound = 0
     
     teamTurn = 0
     winner = None
     revealedCount = 0
     roundCount = 0
     creepersRemaining = 4
+    blocksRemaining = 12
 
     
 
@@ -104,7 +107,8 @@ def main(bookVersion, unitsList, teamList):
             teamTurn = 0
         
         activeTeam = teamOrder[teamTurn]
-        drawCreepersRemaining(creepersRemaining)
+        drawCreepersRemaining(creepersRemaining, blocksRemaining)
+        drawCreeperDamage(teamOrder)
         
         # if gameState == 'PLAY':
         drawBoard(gameBoard, coverImages, revealedBoxes, activeTeam.name)      
@@ -131,14 +135,17 @@ def main(bookVersion, unitsList, teamList):
                     if gameBoard[boxx][boxy] == 'O': # If you find stone...
                         activeTeam.score += 1
                         safeSound.play()
+                        blocksRemaining -= 1
                         activeTeam.foundCreeper=False
 
                         
                     elif gameBoard[boxx][boxy] == 'C': #If you find a creeper...
                         activeTeam.score = 0
+                        activeTeam.creepersFound += 1
                         creepersRemaining -= 1
                         if activeTeam.foundCreeper:
                             activeTeam.overallScore -= 1
+                               
                         else:
                             activeTeam.foundCreeper = True
                         pygame.display.update()
@@ -154,7 +161,7 @@ def main(bookVersion, unitsList, teamList):
         if winState:
             winSound.play()
             pygame.display.update()
-            drawCreepersRemaining(creepersRemaining)
+            drawCreepersRemaining(creepersRemaining, blocksRemaining)
             
             return winner, teamOrder
 
@@ -311,18 +318,47 @@ def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
         currentTeamImg = teamBTurnImg
         DISPLAYSURF.blit(currentTeamImg, (WINDOWWIDTH-256, 180))
 
-def drawCreepersRemaining(creepers):
+def drawCreepersRemaining(creepers, blocks):
+
+    creeperIconLoc = 266
+    blockIconLoc = WINDOWWIDTH - creeperIconLoc - 80
+
     creeperFont = pygame.font.SysFont('system', 70)
+
+    percentFont = pygame.font.SysFont('system', 45)
+
     creeperTextSurf = creeperFont.render(str(creepers), 1, WHITE)
     creeperTextRect = creeperTextSurf.get_rect()
-    creeperTextRect.topleft = ((WINDOWWIDTH/2 + 10), 670)
+    creeperTextRect.topleft = ((creeperIconLoc+80+10), 670)
 
     creeperIcon = pygame.image.load(os.path.join(baseImagePath, 'CreepersRemainingIcon.png'))
     creeperRect = creeperIcon.get_rect()
-    creeperRect.topleft = ((WINDOWWIDTH/2 -90), 650)
+    creeperRect.topleft = (creeperIconLoc, 650)
+
+
+    blockTextSurf = creeperFont.render(str(blocks), 1, WHITE)
+    blockTextRect = blockTextSurf.get_rect()
+    blockTextRect.topleft = ((blockIconLoc-60), 670)
+
+    blockIcon = pygame.image.load(os.path.join(baseImagePath, 'blocksRemainingIcon.png'))
+    blockRect = blockIcon.get_rect()
+    blockRect.topleft = (blockIconLoc, 650)
+
+    prePercent = (creepers / blocks)
+    prePercent = round(prePercent, 2)
+    percent = int(prePercent * 100)
+
+    percentTextSurf = percentFont.render(f'{str(percent)}%', 1, WHITE)
+    percentTextRect = percentTextSurf.get_rect()
+    percentTextRect.topleft = ((WINDOWWIDTH/2 -30) , 680)
 
     DISPLAYSURF.blit(creeperTextSurf, creeperTextRect)
     DISPLAYSURF.blit(creeperIcon, creeperRect)
+
+    DISPLAYSURF.blit(blockTextSurf, blockTextRect)
+    DISPLAYSURF.blit(blockIcon, blockRect)
+
+    DISPLAYSURF.blit(percentTextSurf, percentTextRect)
 
 def drawRoundsWon(teamList):
     firstTeam = teamList[0]
@@ -349,7 +385,37 @@ def drawRoundsWon(teamList):
     DISPLAYSURF.blit(teamAScoreSurf, teamAScoreRect)
     DISPLAYSURF.blit(teamBScoreSurf, teamBScoreRect)
     
-            
+def drawCreeperDamage(teamList):
+
+    firstTeam = teamList[0]
+    secondTeam = teamList[1]
+
+    if firstTeam.name == 'teamA':
+        teamADamage = firstTeam.creepersFound
+        teamBDamage = secondTeam.creepersFound
+    else:
+        teamBDamage = firstTeam.creepersFound
+        teamADamage = secondTeam.creepersFound
+    
+    teamADamageNumber = str(teamADamage).zfill(3)
+    teamADamageFileName = f'houseBase_{teamADamageNumber}.png'
+    teamADamageImagePath = os.path.join(baseImagePath, teamADamageFileName)
+    teamADamageImg = pygame.image.load(teamADamageImagePath)
+
+    teamBDamageNumber = str(teamBDamage).zfill(3)
+    teamBDamageFileName = f'houseBase_{teamBDamageNumber}.png'
+    teamBDamageImagePath = os.path.join(baseImagePath, teamBDamageFileName)
+    teamBDamageImg = pygame.image.load(teamBDamageImagePath)
+
+    teamADamageCoords = (0, 640)
+    teamBDamageCoords = (768, 640)
+
+    DISPLAYSURF.blit(teamADamageImg, (teamADamageCoords))
+    DISPLAYSURF.blit(teamBDamageImg, (teamBDamageCoords))
+
+
+
+
 
 def selectSeries():
 
@@ -398,6 +464,15 @@ def selectVersionScreen(whatbook):
         CO4Menu = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
 
         menuList = [CO1Menu, CO2Menu, CO3Menu, CO4Menu]
+    elif whatbook == 'EngBus':
+        menuBoard = ['EB2', 'EB3', 'EB4']
+        menuY = 1
+
+        EB2Menu = pygame.image.load(os.path.join(baseImagePath, 'EB2Button.png'))
+        EB3Menu = pygame.image.load(os.path.join(baseImagePath, 'EB3Button.png'))
+        EB4Menu = pygame.image.load(os.path.join(baseImagePath, 'EB4Button.png'))
+
+        menuList = [EB2Menu, EB3Menu, EB4Menu]
     
     mousex, mousey = 0, 0
     while True:
@@ -484,6 +559,7 @@ def selectUnitScreen(choice=None):
 def drawGameOverScreen(winner, teams):
     DISPLAYSURF.blit(backgroundImage, (0,0))
     drawScoreHouse(teams)
+    drawCreeperDamage(teams)
     drawRoundsWon(teams)
 
     winnerImagePath = None
@@ -560,12 +636,15 @@ def drawScoreHouse(teamList):
     teamAHouseStateFileName = f'houseState_{teamAHouseStateNumber}.png'
     teamAHouseImagePath = os.path.join(baseImagePath, teamAHouseStateFileName)
     
+    
 
     teamAHouseCoords = (0, 128*2)
 
     teamBHouseStateNumber = str(teamBScore).zfill(3)
     teamBHouseStateFileName = f'houseState_{teamBHouseStateNumber}.png'
     teamBHouseImagePath = os.path.join(baseImagePath, teamBHouseStateFileName)
+    
+
 
 
     loadTeamAImage = pygame.image.load(teamAHouseImagePath)
@@ -610,8 +689,8 @@ def game():
     mousex = 0
     mousey = 0
 
-    teamA = team('teamA', 0, 0, 0, False)
-    teamB = team('teamB', 0, 0, 0, False)
+    teamA = team('teamA', 0, 0, 0, False, 0)
+    teamB = team('teamB', 0, 0, 0, False, 0)
 
     teams = [teamA, teamB]
     # coverImages = fetchImages(comeOnVer, comeOnUnits)
@@ -632,12 +711,15 @@ def game():
     safeSound = pygame.mixer.Sound(safeSoundPath)
     winSound = pygame.mixer.Sound(winSoundPath)
 
+    BGMPath = os.path.join(baseImagePath, 'creeperBMG.ogg')
+    BMG = pygame.mixer.music.load(BGMPath)
+    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.play(loops=-1)
+
     
     while True:
         book = selectSeries()
-        if book == 'EngBus':
-            continue
-        comeOnVer = selectVersionScreen(book)
+        bookVer = selectVersionScreen(book)
 
         firstSelectedUnit, firtSelectionChoice = selectUnitScreen()
         secondSelectedUnit, secondSelectedChoice = selectUnitScreen(firtSelectionChoice)
@@ -645,7 +727,7 @@ def game():
         comeOnUnits = (firstSelectedUnit, secondSelectedUnit)
 
         while True:
-            gameWinner, scores = main(comeOnVer, comeOnUnits, teams)            
+            gameWinner, scores = main(bookVer, comeOnUnits, teams)            
             drawGameOverScreen(gameWinner, scores)
 
 if __name__ == "__main__":
