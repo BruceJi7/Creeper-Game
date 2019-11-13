@@ -1,3 +1,24 @@
+TODO:
+
+- Clean up menu - put the two unit menus together on screen, and add a submit button
+
+- Make images load from a dict
+
+- Add random options: random from one book, one series, all together
+
+- Add exit to go back to book / unit selection
+
+THEN the game is complete.
+
+---
+19/11/12
+
+Added BGM and damage
+Added % chance of getting a creeper!
+
+
+
+
 
 ---
 19/9/26

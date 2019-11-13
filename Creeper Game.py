@@ -495,12 +495,14 @@ def selectVersionScreen(whatbook):
         boxx, boxy = getBoxAtPixel(mousex, mousey)
         if boxx != None and boxy != None:
             # The mouse is currently over a box.
-            if menuBoard[boxx] and boxy == menuY:
-                drawHighlightBox(boxx, boxy)
+            try:
+                if menuBoard[boxx] and boxy == menuY:
+                    drawHighlightBox(boxx, boxy)
 
                 if mouseClicked == True:
                     return menuBoard[boxx]
-            
+            except:
+                continue
                         
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -535,7 +537,10 @@ def selectUnitScreen(choice=None):
                 mousex, mousey = event.pos
                 mouseClicked = True
 
-        boxx, boxy = getBoxAtPixel(mousex, mousey)
+        try:
+            boxx, boxy = getBoxAtPixel(mousex, mousey)
+        except:
+            continue
         if boxx != None and boxy != None:
 
             if boxy <= 1:
