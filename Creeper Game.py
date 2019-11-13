@@ -508,17 +508,19 @@ def selectVersionScreen(whatbook):
         FPSCLOCK.tick(FPS)
 
 def selectUnitScreen(choice=None):
-    menuBoard = [['u1', 'u2', 'u3', 'u4'], ['u5', 'u6', 'u7', 'u8']]
+    firstUnitBoard = [['u1', 'u2', 'u3', 'u4'], ['u5', 'u6', 'u7', 'u8']]
+    secondUnitBoard = [['u1', 'u2', 'u3', 'u4'], ['u5', 'u6', 'u7', 'u8']]
     UNITFONT = pygame.font.Font('freesansbold.ttf', 40)
     mousex, mousey = 0, 0
     selection = [0, 0]
+    choices = [None, None]
 
     while True:
         checkForQuit()
         DISPLAYSURF.blit(backgroundImage, (0,0))
-        for menuY in range(0, len(menuBoard)):
-            for menuX in range(0, len(menuBoard[menuY])):
-                unitText = menuBoard[menuY][menuX]
+        for menuY in range(0, 2):
+            for menuX in range(0, 4):
+                unitText = firstUnitBoard[menuY][menuX]
                 wordSurf = UNITFONT.render(unitText, 1, WHITE)
                 wordRect = wordSurf.get_rect()
                 
@@ -526,6 +528,21 @@ def selectUnitScreen(choice=None):
                 wordRect.center = (left, top)
 
                 DISPLAYSURF.blit(wordSurf, wordRect)
+        
+        for menuY in range(0, 2):
+            for menuX in range(0, 4):
+                unitText = secondUnitBoard[menuY][menuX]
+                wordSurf = UNITFONT.render(unitText, 1, WHITE)
+                wordRect = wordSurf.get_rect()
+
+                
+                
+                left, top = centreCoordsOfBox(menuX, menuY+2)
+                wordRect.center = (left, top)
+
+                DISPLAYSURF.blit(wordSurf, wordRect)
+
+        
 
         mouseClicked = False
         for event in pygame.event.get(): # Event handling loop
@@ -543,20 +560,36 @@ def selectUnitScreen(choice=None):
             continue
         if boxx != None and boxy != None:
 
-            if boxy <= 1:
+            if boxy in (0, 1) :
                 # The mouse is currently over a box.
-                if menuBoard[boxy] and menuBoard[boxy][boxx]:
+                if firstUnitBoard[boxy] and firstUnitBoard[boxy][boxx]:
                     drawHighlightBox(boxx, boxy)
 
                     if mouseClicked == True:
-                        if boxy <=1:
+                        if boxy in (0, 1):
                             selection[0] = boxx
                             selection[1] = boxy
 
-                            return menuBoard[boxy][boxx], selection
+                            choices[0] = firstUnitBoard[boxy][boxx]
 
-        if choice:
-            drawSelectionBox(choice[0], choice[1])
+            if boxy in (2, 3):
+                if secondUnitBoard[boxy-2] and secondUnitBoard[boxy-2][boxx]:
+                    drawHighlightBox(boxx, boxy)
+
+                    if mouseClicked == True:
+                        if boxy in (2, 3):
+                            selection[0] = boxx
+                            selection[1] = boxy - 2
+
+                            choices[1] = secondUnitBoard[boxy-2][boxx]
+                        
+
+        if choices[0]:
+            highX, highY = leftTopCoordsOfBox
+            drawSelectionBox(highX, highY)
+        if choices[1]:
+            drawSelectionBox(boxx, boxy)
+
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
