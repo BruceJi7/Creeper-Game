@@ -514,10 +514,25 @@ def selectUnitScreen(choice=None):
     mousex, mousey = 0, 0
     selection = [0, 0]
     choices = [None, None]
+    firstUnitChoice = None
+    secondUnitChoice = None
+
+    buttonImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButton.png'))
+    buttonHoverImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButtonOver.png')) 
+    buttonDownImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButtonDown.png'))
+
+    buttonState = buttonImg
+
+    buttonRect = buttonState.get_rect()
+    buttonRect.topleft = (384, 650)
 
     while True:
         checkForQuit()
         DISPLAYSURF.blit(backgroundImage, (0,0))
+
+        
+        DISPLAYSURF.blit(buttonState, buttonRect)
+        
         for menuY in range(0, 2):
             for menuX in range(0, 4):
                 unitText = firstUnitBoard[menuY][menuX]
@@ -545,6 +560,7 @@ def selectUnitScreen(choice=None):
         
 
         mouseClicked = False
+        buttonDown = False
         for event in pygame.event.get(): # Event handling loop
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
@@ -558,6 +574,9 @@ def selectUnitScreen(choice=None):
             boxx, boxy = getBoxAtPixel(mousex, mousey)
         except:
             continue
+
+         
+
         if boxx != None and boxy != None:
 
             if boxy in (0, 1) :
@@ -567,10 +586,10 @@ def selectUnitScreen(choice=None):
 
                     if mouseClicked == True:
                         if boxy in (0, 1):
-                            selection[0] = boxx
-                            selection[1] = boxy
+   
+                            firstUnitChoice = firstUnitBoard[boxy][boxx]
 
-                            choices[0] = firstUnitBoard[boxy][boxx]
+                            choices[0] = [boxx, boxy]
 
             if boxy in (2, 3):
                 if secondUnitBoard[boxy-2] and secondUnitBoard[boxy-2][boxx]:
@@ -578,17 +597,27 @@ def selectUnitScreen(choice=None):
 
                     if mouseClicked == True:
                         if boxy in (2, 3):
-                            selection[0] = boxx
-                            selection[1] = boxy - 2
+                            secondUnitChoice = secondUnitBoard[boxy-2][boxx]
 
-                            choices[1] = secondUnitBoard[boxy-2][boxx]
-                        
+                            choices[1] = [boxx, boxy]               
 
         if choices[0]:
-            highX, highY = leftTopCoordsOfBox
-            drawSelectionBox(highX, highY)
+            drawSelectionBox(choices[0][0], choices[0][1])
         if choices[1]:
-            drawSelectionBox(boxx, boxy)
+            drawSelectionBox(choices[1][0], choices[1][1])
+
+        if buttonRect.collidepoint(mousex, mousey):
+            if mouseClicked == False:
+                buttonState = buttonHoverImg
+
+            elif mouseClicked == True:
+                buttonState = buttonDownImg
+                if firstUnitChoice and secondUnitChoice:
+                    return (firstUnitChoice, secondUnitChoice)
+            
+        else:
+            buttonState = buttonImg
+
 
 
         pygame.display.update()
@@ -759,9 +788,8 @@ def game():
         book = selectSeries()
         bookVer = selectVersionScreen(book)
 
-        firstSelectedUnit, firtSelectionChoice = selectUnitScreen()
-        secondSelectedUnit, secondSelectedChoice = selectUnitScreen(firtSelectionChoice)
-
+        firstSelectedUnit, secondSelectedUnit = selectUnitScreen()
+        
         comeOnUnits = (firstSelectedUnit, secondSelectedUnit)
 
         while True:
