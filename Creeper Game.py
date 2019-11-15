@@ -168,42 +168,6 @@ def main(bookVersion, unitsList, teamList):
 
         
 
-        # if turnsTaken['teamA'] == turnsTaken['teamB']: # The teams must take the same number of turns
-
-
-        #     if revealedCount < 16: #Checks to see if someone has a winning score
-                
-                    
-        #             if scores['teamA'] == 4 and scores['teamB'] == 4:
-        #                 winner = 'both'
-        #                 winSound.play()
-        #                 pygame.display.update()
-        #                 return winner, scores
-                    
-        #             elif scores['teamA'] == 4 and scores['teamB'] != 4:
-        #                 winner = 'teamA'
-        #                 winSound.play()
-        #                 pygame.display.update()
-        #                 return winner, scores
-
-        #             elif scores['teamB'] == 4 and scores['teamA'] != 4:
-        #                 winner = 'teamB'
-        #                 winSound.play()
-        #                 pygame.display.update()
-        #                 return winner, scores
-
-
-        #     elif revealedCount == 16: # If the board is fully revealed...
-        #         winSound.play()
-        #         if scores['teamA'] > scores['teamB']:
-        #             winner = 'teamA'
-        #         elif scores['teamB'] > scores['teamA']:
-        #             winner = 'teamB'
-        #         pygame.display.update()
-        #         return winner, scores
-
-            
-        
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -346,7 +310,7 @@ def drawCreepersRemaining(creepers, blocks):
     blockRect.topleft = (blockIconLoc, 650)
 
     prePercent = (creepers / blocks)
-    prePercent = round(prePercent, 2)
+    prePercent = round(prePercent, 3)
     percent = int(prePercent * 100)
 
     percentTextSurf = percentFont.render(f'{str(percent)}%', 1, WHITE)
@@ -792,7 +756,7 @@ def game():
 
     BGMPath = os.path.join(baseImagePath, 'creeperBMG.ogg')
     BMG = pygame.mixer.music.load(BGMPath)
-    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.set_volume(0.3)
     pygame.mixer.music.play(loops=-1)
 
     
@@ -811,6 +775,3 @@ def game():
 if __name__ == "__main__":
     
     game()
-
-    # print(fetchImages(comeOnVer, comeOnUnits))
-    # print(drawBackground())
