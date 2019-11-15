@@ -2,6 +2,7 @@ from creeperLocationRandomizer import generateRandomCreeperLocations
 
 import random, sys, time, pygame, os
 from pygame.locals import *
+import pygame.freetype
 
 import pprint
 
@@ -323,9 +324,9 @@ def drawCreepersRemaining(creepers, blocks):
     creeperIconLoc = 266
     blockIconLoc = WINDOWWIDTH - creeperIconLoc - 80
 
-    creeperFont = pygame.font.SysFont('system', 70)
+    creeperFont = pygame.font.SysFont('minecraft', 70)
 
-    percentFont = pygame.font.SysFont('system', 45)
+    percentFont = pygame.font.SysFont('minecraft', 45)
 
     creeperTextSurf = creeperFont.render(str(creepers), 1, WHITE)
     creeperTextRect = creeperTextSurf.get_rect()
@@ -338,7 +339,7 @@ def drawCreepersRemaining(creepers, blocks):
 
     blockTextSurf = creeperFont.render(str(blocks), 1, WHITE)
     blockTextRect = blockTextSurf.get_rect()
-    blockTextRect.topleft = ((blockIconLoc-60), 670)
+    blockTextRect.topleft = ((blockIconLoc-75), 670)
 
     blockIcon = pygame.image.load(os.path.join(baseImagePath, 'blocksRemainingIcon.png'))
     blockRect = blockIcon.get_rect()
@@ -371,7 +372,7 @@ def drawRoundsWon(teamList):
         teamAScore = secondTeam.overallScore
         teamBScore = firstTeam.overallScore
     
-    scoreFont = pygame.font.SysFont('system', 70)
+    scoreFont = pygame.font.SysFont('minecraft', 40)
 
     teamAScoreSurf = scoreFont.render(str(teamAScore), 1, WHITE)
     teamAScoreRect = teamAScoreSurf.get_rect()
@@ -412,10 +413,6 @@ def drawCreeperDamage(teamList):
 
     DISPLAYSURF.blit(teamADamageImg, (teamADamageCoords))
     DISPLAYSURF.blit(teamBDamageImg, (teamBDamageCoords))
-
-
-
-
 
 def selectSeries():
 
@@ -507,10 +504,10 @@ def selectVersionScreen(whatbook):
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-def selectUnitScreen(choice=None):
-    firstUnitBoard = [['u1', 'u2', 'u3', 'u4'], ['u5', 'u6', 'u7', 'u8']]
-    secondUnitBoard = [['u1', 'u2', 'u3', 'u4'], ['u5', 'u6', 'u7', 'u8']]
-    UNITFONT = pygame.font.Font('freesansbold.ttf', 40)
+def selectUnitScreen():
+    firstUnitBoard = [['1', '2', '3', '4'], ['5', '6', '7', '8']]
+    secondUnitBoard = [['1', '2', '3', '4'], ['5', '6', '7', '8']]
+    UNITFONT = pygame.font.SysFont('Minecraft', 40)
     mousex, mousey = 0, 0
     selection = [0, 0]
     choices = [None, None]
@@ -520,6 +517,8 @@ def selectUnitScreen(choice=None):
     buttonImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButton.png'))
     buttonHoverImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButtonOver.png')) 
     buttonDownImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButtonDown.png'))
+
+    frameImg = pygame.image.load(os.path.join(baseImagePath, 'frame.png'))
 
     buttonState = buttonImg
 
@@ -532,6 +531,16 @@ def selectUnitScreen(choice=None):
 
         
         DISPLAYSURF.blit(buttonState, buttonRect)
+
+
+        for Y in range(0, 4):
+            for X in range (0, 4):
+                frameRect = frameImg.get_rect()
+                left, top = centreCoordsOfBox(X, Y)
+                frameRect.center = (left, top)
+                DISPLAYSURF.blit(frameImg, frameRect)
+
+
         
         for menuY in range(0, 2):
             for menuX in range(0, 4):
@@ -539,10 +548,13 @@ def selectUnitScreen(choice=None):
                 wordSurf = UNITFONT.render(unitText, 1, WHITE)
                 wordRect = wordSurf.get_rect()
                 
+                
                 left, top = centreCoordsOfBox(menuX, menuY)
                 wordRect.center = (left, top)
-
+                
                 DISPLAYSURF.blit(wordSurf, wordRect)
+                
+
         
         for menuY in range(0, 2):
             for menuX in range(0, 4):
@@ -613,7 +625,7 @@ def selectUnitScreen(choice=None):
             elif mouseClicked == True:
                 buttonState = buttonDownImg
                 if firstUnitChoice and secondUnitChoice:
-                    return (firstUnitChoice, secondUnitChoice)
+                    return (f'u{firstUnitChoice}', f'u{secondUnitChoice}')
             
         else:
             buttonState = buttonImg
