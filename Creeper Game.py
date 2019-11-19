@@ -254,8 +254,6 @@ def fetchImages(bookVersion, comeOnUnits):
 
     return [rowA, rowB, rowC, rowD]
 
-    return selectedImages
-
 def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
     safeImg = pygame.image.load(os.path.join(baseImagePath, 'cobbleStone.png'))
     creeperImg = pygame.image.load(os.path.join(baseImagePath, 'creeperHead.png'))
