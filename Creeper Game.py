@@ -1,4 +1,5 @@
 from creeperLocationRandomizer import generateRandomCreeperLocations
+import creeperCommonImages
 
 import random, sys, time, pygame, os
 from pygame.locals import *
@@ -60,14 +61,10 @@ def main(bookVersion, unitsList, teamList):
     mousey = 0
     mouseClicked = False
 
-    coverImages = fetchImages(comeOnVer, comeOnUnits)
+    coverImages = creeperCommonImages.fetchImages(comeOnVer, comeOnUnits[0], comeOnUnits[1])
 
-    backgroundPath = os.path.join(baseImagePath, 'background.png')
-    backgroundImage = pygame.image.load(backgroundPath)
-
-    pngSequenceLoc = os.path.join(baseImagePath, 'explosionSeq')
-    explosionSeq = [(os.path.join(pngSequenceLoc, pngFile)) for pngFile in os.listdir(pngSequenceLoc) if os.path.splitext(pngFile)[1] == '.png']
-    explosionImgs = [pygame.image.load(image) for image in explosionSeq]
+    backgroundImage = creeperCommonImages.backgroundImage
+    explosionImgs = creeperCommonImages.explosionSeq
 
 
     creeperSoundPath = os.path.join(baseImagePath, 'creeperExplode.ogg')
@@ -255,11 +252,11 @@ def fetchImages(bookVersion, comeOnUnits):
     return [rowA, rowB, rowC, rowD]
 
 def drawBoard(currentBoard, coverBoard, revealedBoard, currentTeam):
-    safeImg = pygame.image.load(os.path.join(baseImagePath, 'cobbleStone.png'))
-    creeperImg = pygame.image.load(os.path.join(baseImagePath, 'creeperHead.png'))
+    safeImg = creeperCommonImages.blockTiles['cobble']
+    creeperImg = creeperCommonImages.blockTiles['creeper']
 
-    teamATurnImg = pygame.image.load(os.path.join(baseImagePath, 'teamATurnIndicator.png'))
-    teamBTurnImg = pygame.image.load(os.path.join(baseImagePath, 'teamBTurnIndicator.png'))
+    teamATurnImg = creeperCommonImages.teamTurnIndicator['teamA']
+    teamBTurnImg = creeperCommonImages.teamTurnIndicator['teamB']
     
     
     for boxx in range(len(currentBoard)):
@@ -294,7 +291,7 @@ def drawCreepersRemaining(creepers, blocks):
     creeperTextRect = creeperTextSurf.get_rect()
     creeperTextRect.topleft = ((creeperIconLoc+80+10), 670)
 
-    creeperIcon = pygame.image.load(os.path.join(baseImagePath, 'CreepersRemainingIcon.png'))
+    creeperIcon = creeperCommonImages.remainingIcons['creeper']
     creeperRect = creeperIcon.get_rect()
     creeperRect.topleft = (creeperIconLoc, 650)
 
@@ -303,7 +300,7 @@ def drawCreepersRemaining(creepers, blocks):
     blockTextRect = blockTextSurf.get_rect()
     blockTextRect.topleft = ((blockIconLoc-75), 670)
 
-    blockIcon = pygame.image.load(os.path.join(baseImagePath, 'blocksRemainingIcon.png'))
+    blockIcon = creeperCommonImages.remainingIcons['cobble']
     blockRect = blockIcon.get_rect()
     blockRect.topleft = (blockIconLoc, 650)
 
@@ -359,16 +356,9 @@ def drawCreeperDamage(teamList):
     else:
         teamBDamage = firstTeam.creepersFound
         teamADamage = secondTeam.creepersFound
-    
-    teamADamageNumber = str(teamADamage).zfill(3)
-    teamADamageFileName = f'houseBase_{teamADamageNumber}.png'
-    teamADamageImagePath = os.path.join(baseImagePath, teamADamageFileName)
-    teamADamageImg = pygame.image.load(teamADamageImagePath)
 
-    teamBDamageNumber = str(teamBDamage).zfill(3)
-    teamBDamageFileName = f'houseBase_{teamBDamageNumber}.png'
-    teamBDamageImagePath = os.path.join(baseImagePath, teamBDamageFileName)
-    teamBDamageImg = pygame.image.load(teamBDamageImagePath)
+    teamADamageImg = creeperCommonImages.houseBase[teamADamage]
+    teamBDamageImg = creeperCommonImages.houseBase[teamBDamage]
 
     teamADamageCoords = (0, 640)
     teamBDamageCoords = (768, 640)
@@ -378,11 +368,11 @@ def drawCreeperDamage(teamList):
 
 def selectSeries():
 
-    COButton = pygame.image.load(os.path.join(baseImagePath, 'BookMenuCO.png'))
+    COButton = creeperCommonImages.menuButtons['bookMenu']['bookMenuCO']
     CORect = COButton.get_rect()
     CORect.topleft = (XMARGIN, YMARGIN)
 
-    EBButton = pygame.image.load(os.path.join(baseImagePath, 'BookMenuEB.png'))
+    EBButton = creeperCommonImages.menuButtons['bookMenu']['bookMenuEB']
     EBRect = EBButton.get_rect()
     EBRect.topleft = (XMARGIN+256, YMARGIN)
 
@@ -417,19 +407,19 @@ def selectVersionScreen(whatbook):
         menuBoard = ['CO1', 'CO2', 'CO3', 'CO4']
         menuY = 1
 
-        CO1Menu = pygame.image.load(os.path.join(baseImagePath, 'CO1Button.png'))
-        CO2Menu = pygame.image.load(os.path.join(baseImagePath, 'CO2Button.png'))
-        CO3Menu = pygame.image.load(os.path.join(baseImagePath, 'CO3Button.png'))
-        CO4Menu = pygame.image.load(os.path.join(baseImagePath, 'CO4Button.png'))
+        CO1Menu = creeperCommonImages.menuButtons['COMenu']['CO1Button']
+        CO2Menu = creeperCommonImages.menuButtons['COMenu']['CO2Button']
+        CO3Menu = creeperCommonImages.menuButtons['COMenu']['CO3Button']
+        CO4Menu = creeperCommonImages.menuButtons['COMenu']['CO4Button']
 
         menuList = [CO1Menu, CO2Menu, CO3Menu, CO4Menu]
     elif whatbook == 'EngBus':
         menuBoard = ['EB2', 'EB3', 'EB4']
         menuY = 1
 
-        EB2Menu = pygame.image.load(os.path.join(baseImagePath, 'EB2Button.png'))
-        EB3Menu = pygame.image.load(os.path.join(baseImagePath, 'EB3Button.png'))
-        EB4Menu = pygame.image.load(os.path.join(baseImagePath, 'EB4Button.png'))
+        EB2Menu = creeperCommonImages.menuButtons['EBMenu']['EB2Button']
+        EB3Menu = creeperCommonImages.menuButtons['EBMenu']['EB3Button']
+        EB4Menu = creeperCommonImages.menuButtons['EBMenu']['EB4Button']
 
         menuList = [EB2Menu, EB3Menu, EB4Menu]
     
@@ -476,11 +466,11 @@ def selectUnitScreen():
     firstUnitChoice = None
     secondUnitChoice = None
 
-    buttonImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButton.png'))
-    buttonHoverImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButtonOver.png')) 
-    buttonDownImg = pygame.image.load(os.path.join(baseImagePath, 'MCmenuButtonDown.png'))
+    buttonImg = creeperCommonImages.buttonState['up']
+    buttonHoverImg = creeperCommonImages.buttonState['hover']
+    buttonDownImg = creeperCommonImages.buttonState['down']
 
-    frameImg = pygame.image.load(os.path.join(baseImagePath, 'frame.png'))
+    frameImg = creeperCommonImages.frameImg
 
     buttonState = buttonImg
 
@@ -603,18 +593,8 @@ def drawGameOverScreen(winner, teams):
     drawCreeperDamage(teams)
     drawRoundsWon(teams)
 
-    winnerImagePath = None
+    winnerImage = creeperCommonImages.winner[winner]
     
-    if winner == 'teamA':
-        winnerImagePath = os.path.join(baseImagePath, 'winTileA.png')
-
-    elif winner == 'teamB':
-        winnerImagePath = os.path.join(baseImagePath, 'winTileB.png')
-    
-    else: 
-        winnerImagePath = os.path.join(baseImagePath, 'winTileAll.png')
-
-    winnerImage = pygame.image.load(winnerImagePath)
 
     while True:    
         checkForQuit()
@@ -673,28 +653,16 @@ def drawScoreHouse(teamList):
         teamBScore = firstTeam.score
         teamAScore = secondTeam.score
 
-    teamAHouseStateNumber = str(teamAScore).zfill(3)
-    teamAHouseStateFileName = f'houseState_{teamAHouseStateNumber}.png'
-    teamAHouseImagePath = os.path.join(baseImagePath, teamAHouseStateFileName)
     
-    
-
+    teamAHouseImage = creeperCommonImages.houseState[teamAScore]   
     teamAHouseCoords = (0, 128*2)
 
-    teamBHouseStateNumber = str(teamBScore).zfill(3)
-    teamBHouseStateFileName = f'houseState_{teamBHouseStateNumber}.png'
-    teamBHouseImagePath = os.path.join(baseImagePath, teamBHouseStateFileName)
-    
-
-
-
-    loadTeamAImage = pygame.image.load(teamAHouseImagePath)
-    loadTeamBImage = pygame.image.load(teamBHouseImagePath)
-    
-
+    teamBHouseImage = creeperCommonImages.houseState[teamBScore]
     teamBHouseCoords = (128*6, 128*2)
-    DISPLAYSURF.blit(loadTeamAImage, (teamAHouseCoords))
-    DISPLAYSURF.blit(loadTeamBImage, (teamBHouseCoords))
+
+
+    DISPLAYSURF.blit(teamAHouseImage, (teamAHouseCoords))
+    DISPLAYSURF.blit(teamBHouseImage, (teamBHouseCoords))
 
 def generateRevealedBoxesData(val):
     revealedBoxes = []
@@ -736,13 +704,8 @@ def game():
     teams = [teamA, teamB]
     # coverImages = fetchImages(comeOnVer, comeOnUnits)
 
-    backgroundPath = os.path.join(baseImagePath, 'background.png')
-    backgroundImage = pygame.image.load(backgroundPath)
-
-    pngSequenceLoc = os.path.join(baseImagePath, 'explosionSeq')
-    explosionSeq = [(os.path.join(pngSequenceLoc, pngFile)) for pngFile in os.listdir(pngSequenceLoc) if os.path.splitext(pngFile)[1] == '.png']
-    explosionImgs = [pygame.image.load(image) for image in explosionSeq]
-
+    backgroundImage = creeperCommonImages.backgroundImage   
+    explosionImgs = creeperCommonImages.explosionSeq
 
     creeperSoundPath = os.path.join(baseImagePath, 'creeperExplode.ogg')
     safeSoundPath = os.path.join(baseImagePath, 'blockClick.ogg')

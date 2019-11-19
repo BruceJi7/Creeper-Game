@@ -10,10 +10,10 @@ backgroundImage = pygame.image.load(os.path.join(baseImagePath, 'background.png'
 
 menuButtonsPath = r'C:\Come On Python Games\resources\creeperGame\commonImages\menuButtons' 
 menuButtons = {
-    'BookMenu': 
+    'bookMenu': 
                 {
-            'BookMenuCO' : pygame.image.load(os.path.join(menuButtonsPath, 'BookMenuCO.png')),
-            'BookMenuEB' : pygame.image.load(os.path.join(menuButtonsPath, 'BookMenuEB.png'))
+            'bookMenuCO' : pygame.image.load(os.path.join(menuButtonsPath, 'BookMenuCO.png')),
+            'bookMenuEB' : pygame.image.load(os.path.join(menuButtonsPath, 'BookMenuEB.png'))
                 },
     
     'COMenu': 
@@ -51,6 +51,12 @@ houseState = [
     pygame.image.load(os.path.join(houseStatePath, 'houseState_004.png')),
 ]
 
+buttonStatePath = r'C:\Come On Python Games\resources\creeperGame\commonImages\buttonState'
+buttonState = {
+    'up'    : pygame.image.load(os.path.join(buttonStatePath, 'MCMenuButton.png')),
+    'hover' : pygame.image.load(os.path.join(buttonStatePath, 'MCMenuButtonOver.png')),
+    'down'  : pygame.image.load(os.path.join(buttonStatePath, 'MCMenuButtonDown.png')),
+} 
 
 
 winnerPath = r'C:\Come On Python Games\resources\creeperGame\commonImages\winner'
@@ -59,6 +65,8 @@ winner = {
     'teamB' : pygame.image.load(os.path.join(winnerPath, 'winTileB.png')),
     'both'  : pygame.image.load(os.path.join(winnerPath, 'winTileAll.png'))
 } 
+
+
 
 
 explosionSeqPath = r'C:\Come On Python Games\resources\creeperGame\commonImages\explosionSeq'
