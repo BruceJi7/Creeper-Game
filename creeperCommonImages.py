@@ -15,6 +15,42 @@ menuButtons = {
             'bookMenuCO' : pygame.image.load(os.path.join(menuButtonsPath, 'BookMenuCO.png')),
             'bookMenuEB' : pygame.image.load(os.path.join(menuButtonsPath, 'BookMenuEB.png'))
                 },
+
+    'mainMenu': 
+                {
+            'comeOnBook':
+                    {
+                        'up' : pygame.image.load(os.path.join(menuButtonsPath, 'COFrame.png')),
+                        'hover' : pygame.image.load(os.path.join(menuButtonsPath, 'COFrameHover.png'))
+                    },
+            'comeOnRandom':
+                    {
+                        'up': pygame.image.load(os.path.join(menuButtonsPath, 'COFrameShuffle.png')),
+                        'hover': pygame.image.load(os.path.join(menuButtonsPath, 'COFrameShuffleHover.png'))
+                    },
+            'comeOnRainbow':
+                    {
+                        'up': pygame.image.load(os.path.join(menuButtonsPath, 'COFrameRainbowShuffle.png')),
+                        'hover' : pygame.image.load(os.path.join(menuButtonsPath, 'COFrameRainbowShuffleHover.png'))
+
+                    },
+            'engBusBook':
+                    {
+                        'up' : pygame.image.load(os.path.join(menuButtonsPath, 'EBFrame.png')),
+                        'hover' : pygame.image.load(os.path.join(menuButtonsPath, 'EBFrameHover.png'))
+                    },
+            'engBusRandom':
+                    {
+                        'up': pygame.image.load(os.path.join(menuButtonsPath, 'EBFrameShuffle.png')),
+                        'hover': pygame.image.load(os.path.join(menuButtonsPath, 'EBFrameShuffleHover.png'))
+                    },
+            'engBusRainbow':
+                    {
+                        'up': pygame.image.load(os.path.join(menuButtonsPath, 'EBFrameRainbowShuffle.png')),
+                        'hover' : pygame.image.load(os.path.join(menuButtonsPath, 'EBFrameRainbowShuffleHover.png'))
+
+                    },
+                } ,            
     
     'COMenu': 
                 {    
@@ -243,6 +279,116 @@ flashImages = {
 
 
 
+questionSet = {
+    'CO1' : {
+        'u1' : {"What do you have?": "I have a...",
+                "What do you want?": "I want a...",
+                'What does he have?': "He has a...",
+                'What does she have?': 'She has a...',
+                'What does he want?':'He wants a...',
+                'What does she want?':'She wants a...'
+                },
+
+        'u2' : {"What do you have?": "I have a...",
+                "What do you want?": "I want a...",
+                'What does he have?': "He has a...",
+                'What does she have?': 'She has a...',
+                'What does he want?':'He wants a...',
+                'What does she want?':'She wants a...'
+                },
+
+        'u3' : {"What's this": "It's a...",
+                "What's that?": "It's a...",
+                'What are these?':"They're...",
+                "What are those?":"They're..."
+                },
+
+        'u4' : {"Who's he?":"He's a...",
+                "Who's she?":"She's a...",
+                "Who are they?":"They're..."
+                },
+
+        'u5' : {"What time is it?":"It's...",
+                "What time do you ______?":"I _______ at...",
+                "What time does he/she ______?":"He/she _______ at..."
+                },
+        'u6' : {"Do you play ______?":"Yes I do / No I don't",
+                "Does he / she play ______?": "Yes he/she does / No he/she doesn't",
+                "What do you do after school?":"I...",
+                "What does he/she do after school?":"He/She..."
+                },
+
+        'u7' : {"What are you doing?":"I'm _____ing",
+                "What is he doing?":"He's ______ing",
+                "What is she doing?":"She's _____ing",
+                "Are you ________?":"Yes, I am / No I'm not",
+                "Is he ________?":"Yes, he is / No he isn't",
+                "Is she ________?":"Yes, she is / No she isn't",
+                },
+        'u8' : {"Where is the ______?":"It's in the _______"},
+        },
+    'CO2' : {
+        'u1' : os.path.join(flashImagePath, 'CO2', 'u1'),
+        'u2' : os.path.join(flashImagePath, 'CO2', 'u2'),
+        'u3' : os.path.join(flashImagePath, 'CO2', 'u3'),
+        'u4' : os.path.join(flashImagePath, 'CO2', 'u4'),
+        'u5' : os.path.join(flashImagePath, 'CO2', 'u5'),
+        'u6' : os.path.join(flashImagePath, 'CO2', 'u6'),
+        'u7' : os.path.join(flashImagePath, 'CO2', 'u7'),
+        'u8' : os.path.join(flashImagePath, 'CO2', 'u8')
+        }, 
+    'CO3' : {
+        'u1' : os.path.join(flashImagePath, 'CO3', 'u1'),
+        'u2' : os.path.join(flashImagePath, 'CO3', 'u2'),
+        'u3' : os.path.join(flashImagePath, 'CO3', 'u3'),
+        'u4' : os.path.join(flashImagePath, 'CO3', 'u4'),
+        'u5' : os.path.join(flashImagePath, 'CO3', 'u5'),
+        'u6' : os.path.join(flashImagePath, 'CO3', 'u6'),
+        'u7' : os.path.join(flashImagePath, 'CO3', 'u7'),
+        'u8' : os.path.join(flashImagePath, 'CO3', 'u8')
+        }, 
+    'CO4' : {
+        'u1' : os.path.join(flashImagePath, 'CO4', 'u1'),
+        'u2' : os.path.join(flashImagePath, 'CO4', 'u2'),
+        'u3' : os.path.join(flashImagePath, 'CO4', 'u3'),
+        'u4' : os.path.join(flashImagePath, 'CO4', 'u4'),
+        'u5' : os.path.join(flashImagePath, 'CO4', 'u5'),
+        'u6' : os.path.join(flashImagePath, 'CO4', 'u6'),
+        'u7' : os.path.join(flashImagePath, 'CO4', 'u7'),
+        'u8' : os.path.join(flashImagePath, 'CO4', 'u8')
+        },  
+    'EB2' : {
+        'u1' : os.path.join(flashImagePath, 'EB2', 'u1'),
+        'u2' : os.path.join(flashImagePath, 'EB2', 'u2'),
+        'u3' : os.path.join(flashImagePath, 'EB2', 'u3'),
+        'u4' : os.path.join(flashImagePath, 'EB2', 'u4'),
+        'u5' : os.path.join(flashImagePath, 'EB2', 'u5'),
+        'u6' : os.path.join(flashImagePath, 'EB2', 'u6'),
+        'u7' : os.path.join(flashImagePath, 'EB2', 'u7'),
+        'u8' : os.path.join(flashImagePath, 'EB2', 'u8')
+        },
+    'EB3' : {
+        'u1' : os.path.join(flashImagePath, 'EB3', 'u1'),
+        'u2' : os.path.join(flashImagePath, 'EB3', 'u2'),
+        'u3' : os.path.join(flashImagePath, 'EB3', 'u3'),
+        'u4' : os.path.join(flashImagePath, 'EB3', 'u4'),
+        'u5' : os.path.join(flashImagePath, 'EB3', 'u5'),
+        'u6' : os.path.join(flashImagePath, 'EB3', 'u6'),
+        'u7' : os.path.join(flashImagePath, 'EB3', 'u7'),
+        'u8' : os.path.join(flashImagePath, 'EB3', 'u8')
+        },
+    'EB4' : {
+        'u1' : os.path.join(flashImagePath, 'EB4', 'u1'),
+        'u2' : os.path.join(flashImagePath, 'EB4', 'u2'),
+        'u3' : os.path.join(flashImagePath, 'EB4', 'u3'),
+        'u4' : os.path.join(flashImagePath, 'EB4', 'u4'),
+        'u5' : os.path.join(flashImagePath, 'EB4', 'u5'),
+        'u6' : os.path.join(flashImagePath, 'EB4', 'u6'),
+        'u7' : os.path.join(flashImagePath, 'EB4', 'u7'),
+        'u8' : os.path.join(flashImagePath, 'EB4', 'u8')
+        }
+}
+
 
 def fetchImage(path):
     return pygame.image.load(path)
@@ -320,5 +466,21 @@ def fetchRandomImagesFromSeries(series):
     rowD = pygameImages[12:16]
     return [rowA, rowB, rowC, rowD]
 
+# class Menubutton():
+#     def __init__(self, path, state):
+#         self.path = path
+#         self.state = state
+#         self.surface = self.path[self.state]
+#         self.rect = self.surface.get_rect()
 
-print(fetchRandomImagesFromSeries('EB'))
+# COButton = Menubutton(menuButtons['mainMenu']['comeOnBook'], 'hover')
+
+# print(COButton.surface)
+
+# COButton.rect.topleft = (200, 200)
+
+# print(COButton.rect)
+
+
+
+print

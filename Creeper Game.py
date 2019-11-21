@@ -44,6 +44,46 @@ class team():
         self.creepersFound = creepersFound
 
 
+class Menubutton():
+    def __init__(self, path, series, gameType, state='up', surface=None):
+        self.path = path
+        self.__state = state
+        self.series = series
+        self.gameType = gameType
+        self.__surface = surface
+        self.rect = self.makeRect()
+        
+        # self.surface = self.path[self.state]
+        # self.rect = self.surface.get_rect()
+
+
+
+
+    @property
+    def state(self):
+        return self.__state
+
+
+    @state.setter
+    def state(self, setState):
+        self.__state = setState
+
+    @property
+    def surface(self):
+        return self.path[self.state]
+
+    # def makeSurf(self):
+    #     return self.path[self.state]
+
+    def makeRect(self):
+        return self.surface.get_rect()
+
+    # def surface(self):
+    #     return self.path[self.state]
+
+    # def rect(self):
+    #     return self.path.get_rect()
+
 
 def main(bookVersion, unitsList, teamList):
     comeOnVer = bookVersion
@@ -587,6 +627,105 @@ def selectUnitScreen():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
     
+def mainMenu():
+
+    COButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['comeOnBook'], 'ComeOn', 'normal')
+    COButton.rect.center = ((128*3), (128*2))
+
+    
+    EBButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['engBusBook'], 'EngBus', 'normal')
+    EBButton.rect.center = ((128*5), (128*2))
+
+    CORandomButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['comeOnRandom'], 'ComeOn', 'unitSelect')
+    CORandomButton.rect.center = ((128*2.5), (128*3.5))
+
+    EBRandomButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['engBusRandom'], 'EngBus', 'unitSelect')
+    EBRandomButton.rect.center = ((128*5.5), (128*3.5))
+
+    CORainbowButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['comeOnRainbow'], 'ComeOn', 'random')
+    CORainbowButton.rect.center = ((128*2.5), (128*4.5))
+
+    EBRainbowButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['engBusRainbow'], 'EngBus', 'random')
+    EBRainbowButton.rect.center = ((128*5.5), (128*4.5))
+
+    result = None
+    mouseClicked = None
+
+    while True:
+        checkForQuit()
+        DISPLAYSURF.blit(backgroundImage, (0,0))
+
+        
+
+
+        mouseX, mouseY = pygame.mouse.get_pos()
+        
+        
+        for event in pygame.event.get(): # Event handling loop
+            if event.type == MOUSEBUTTONUP:
+                mouseClicked = True
+
+
+        buttons = [COButton, EBButton, CORandomButton, EBRandomButton, CORainbowButton, EBRainbowButton]
+
+        for button in buttons:
+            if button.rect.collidepoint(mouseX, mouseY):
+                button.state = 'hover'
+                if mouseClicked:
+                    return (button.series, button.gameType)
+
+            else:
+                button.state = 'up'
+        
+        # if mouseState == 0:
+        #     if result:
+        #         return result
+
+        # if COButton.rect.collidepoint(mouseX, mouseY):
+        #     COButton.state = 'hover'
+        #     if mouseClicked:
+        #         return 'normal', 'comeOn'
+        # elif EBButton.rect.collidepoint(mouseX, mouseY):
+        #     EBButton.state = 'hover'
+        #     if mouseClicked:
+        #         return 'normal', 'engBus'
+        # elif CORandomButton.rect.collidepoint(mouseX, mouseY):
+        #     CORandomButton.state = 'hover'
+        # elif EBRandomButton.rect.collidepoint(mouseX, mouseY):
+        #     EBRandomButton.state = 'hover'
+        # elif CORainbowButton.rect.collidepoint(mouseX, mouseY):
+        #     CORainbowButton.state = 'hover'
+        # elif EBRainbowButton.rect.collidepoint(mouseX, mouseY):
+        #     EBRainbowButton.state = 'hover'
+
+        # else:
+        #     COButton.state = 'up'
+        #     EBButton.state = 'up'
+        #     CORandomButton.state = 'up'
+        #     EBRandomButton.state = 'up'
+        #     CORainbowButton.state = 'up'
+        #     EBRainbowButton.state = 'up'
+
+        for event in pygame.event.get(): # Event handling loop
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                terminate()
+
+        
+        DISPLAYSURF.blit(COButton.surface, COButton.rect)
+        DISPLAYSURF.blit(EBButton.surface, EBButton.rect)
+        DISPLAYSURF.blit(CORandomButton.surface, CORandomButton.rect)
+        DISPLAYSURF.blit(EBRandomButton.surface, EBRandomButton.rect)
+        DISPLAYSURF.blit(CORainbowButton.surface, CORainbowButton.rect)
+        DISPLAYSURF.blit(EBRainbowButton.surface, EBRainbowButton.rect)
+
+
+
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+        
+
+
+
 def drawGameOverScreen(winner, teams):
     DISPLAYSURF.blit(backgroundImage, (0,0))
     drawScoreHouse(teams)
@@ -722,8 +861,11 @@ def game():
 
     
     while True:
-        book = selectSeries()
-        bookVer = selectVersionScreen(book)
+        book, gameType = mainMenu()
+        if gameType == 'normal':
+            bookVer = selectVersionScreen(book)
+        else:
+            continue
 
         firstSelectedUnit, secondSelectedUnit = selectUnitScreen()
         
