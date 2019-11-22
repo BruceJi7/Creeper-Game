@@ -85,7 +85,7 @@ class Menubutton():
     #     return self.path.get_rect()
 
 
-def main(bookVersion, unitsList, teamList):
+def main(gameType, bookVersion, unitsList, teamList):
     comeOnVer = bookVersion
     comeOnUnits = unitsList
     global DISPLAYSURF, creeperSound, explosionImgs, FPSCLOCK
@@ -101,7 +101,18 @@ def main(bookVersion, unitsList, teamList):
     mousey = 0
     mouseClicked = False
 
-    coverImages = creeperCommonImages.fetchImages(comeOnVer, comeOnUnits[0], comeOnUnits[1])
+    # coverImages = None
+
+
+    if gameType == 'normal':
+
+        coverImages = creeperCommonImages.fetchImages(comeOnVer, comeOnUnits[0], comeOnUnits[1])
+
+    elif gameType == 'bookSelect':
+        coverImages = creeperCommonImages.fetchRandomImagesFromChosenBook(comeOnVer)
+
+    elif gameType == 'random':
+        coverImages = creeperCommonImages.fetchRandomImagesFromSeries(comeOnVer)
 
     backgroundImage = creeperCommonImages.backgroundImage
     explosionImgs = creeperCommonImages.explosionSeq
@@ -636,10 +647,10 @@ def mainMenu():
     EBButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['engBusBook'], 'EngBus', 'normal')
     EBButton.rect.center = ((128*5), (128*2))
 
-    CORandomButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['comeOnRandom'], 'ComeOn', 'unitSelect')
+    CORandomButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['comeOnRandom'], 'ComeOn', 'bookSelect')
     CORandomButton.rect.center = ((128*2.5), (128*3.5))
 
-    EBRandomButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['engBusRandom'], 'EngBus', 'unitSelect')
+    EBRandomButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['engBusRandom'], 'EngBus', 'bookSelect')
     EBRandomButton.rect.center = ((128*5.5), (128*3.5))
 
     CORainbowButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['comeOnRainbow'], 'ComeOn', 'random')
@@ -677,35 +688,7 @@ def mainMenu():
             else:
                 button.state = 'up'
         
-        # if mouseState == 0:
-        #     if result:
-        #         return result
-
-        # if COButton.rect.collidepoint(mouseX, mouseY):
-        #     COButton.state = 'hover'
-        #     if mouseClicked:
-        #         return 'normal', 'comeOn'
-        # elif EBButton.rect.collidepoint(mouseX, mouseY):
-        #     EBButton.state = 'hover'
-        #     if mouseClicked:
-        #         return 'normal', 'engBus'
-        # elif CORandomButton.rect.collidepoint(mouseX, mouseY):
-        #     CORandomButton.state = 'hover'
-        # elif EBRandomButton.rect.collidepoint(mouseX, mouseY):
-        #     EBRandomButton.state = 'hover'
-        # elif CORainbowButton.rect.collidepoint(mouseX, mouseY):
-        #     CORainbowButton.state = 'hover'
-        # elif EBRainbowButton.rect.collidepoint(mouseX, mouseY):
-        #     EBRainbowButton.state = 'hover'
-
-        # else:
-        #     COButton.state = 'up'
-        #     EBButton.state = 'up'
-        #     CORandomButton.state = 'up'
-        #     EBRandomButton.state = 'up'
-        #     CORainbowButton.state = 'up'
-        #     EBRainbowButton.state = 'up'
-
+       
         for event in pygame.event.get(): # Event handling loop
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
@@ -864,15 +847,20 @@ def game():
         book, gameType = mainMenu()
         if gameType == 'normal':
             bookVer = selectVersionScreen(book)
-        else:
-            continue
+            firstSelectedUnit, secondSelectedUnit = selectUnitScreen()
+            comeOnUnits = (firstSelectedUnit, secondSelectedUnit)
+        elif gameType == 'bookSelect':
+            bookVer = selectVersionScreen(book)
+            comeOnUnits = (None, None)
 
-        firstSelectedUnit, secondSelectedUnit = selectUnitScreen()
+        elif gameType == 'random':
+            bookVer = book
+            comeOnUnits = (None, None)
+
         
-        comeOnUnits = (firstSelectedUnit, secondSelectedUnit)
 
         while True:
-            gameWinner, scores = main(bookVer, comeOnUnits, teams)            
+            gameWinner, scores = main(gameType, bookVer, comeOnUnits, teams)            
             drawGameOverScreen(gameWinner, scores)
 
 if __name__ == "__main__":

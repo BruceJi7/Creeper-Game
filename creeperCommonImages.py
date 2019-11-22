@@ -443,9 +443,9 @@ def fetchRandomImagesFromChosenBook(bookVer):
     return [rowA, rowB, rowC, rowD]
 
 def fetchRandomImagesFromSeries(series):
-    if series == 'CO':
+    if series == 'ComeOn':
         bookList = ['CO1', 'CO2', 'CO3', 'CO4']
-    elif series == 'EB':
+    elif series == 'EngBus':
         bookList = ['EB2', 'EB3', 'EB4']
 
     units = ['u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8']
@@ -454,7 +454,9 @@ def fetchRandomImagesFromSeries(series):
     while len(chosenImages) < 16:
         chosenBook = random.choice(bookList)
         chosenUnit = random.choice(units)
-        chosenImages.append(random.choice(flashImages[chosenBook][chosenUnit]))
+        chosenImage = random.choice(flashImages[chosenBook][chosenUnit])
+        chosenImages.append(chosenImage)
+        flashImages[chosenBook][chosenUnit].remove(chosenImage)
     
     pygameImages = [fetchImage(imagePath) for imagePath in chosenImages]
 
