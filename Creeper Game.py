@@ -85,7 +85,7 @@ class Menubutton():
     #     return self.path.get_rect()
 
 
-def main(gameType, bookVersion, unitsList, teamList):
+def main(gameType, bookVersion, unitsList, teamList): # TODO: Resize window conversion
     comeOnVer = bookVersion
     comeOnUnits = unitsList
     global DISPLAYSURF, creeperSound, explosionImgs, FPSCLOCK
@@ -132,6 +132,7 @@ def main(gameType, bookVersion, unitsList, teamList):
     for team in teamOrder:
         team.score = 0
         team.creepersFound = 0
+        team.foundCreeper = False
     
     teamTurn = 0
     winner = None
@@ -354,8 +355,10 @@ def drawCreepersRemaining(creepers, blocks):
     blockIcon = creeperCommonImages.remainingIcons['cobble']
     blockRect = blockIcon.get_rect()
     blockRect.topleft = (blockIconLoc, 650)
-
-    prePercent = (creepers / blocks)
+    try:
+        prePercent = (creepers / (creepers + blocks))
+    except:
+        prePercent = 1
     prePercent = round(prePercent, 3)
     percent = int(prePercent * 100)
 
@@ -417,7 +420,7 @@ def drawCreeperDamage(teamList):
     DISPLAYSURF.blit(teamADamageImg, (teamADamageCoords))
     DISPLAYSURF.blit(teamBDamageImg, (teamBDamageCoords))
 
-def selectSeries():
+def selectSeries(): # TODO: Requires resize window conversion
 
     COButton = creeperCommonImages.menuButtons['bookMenu']['bookMenuCO']
     CORect = COButton.get_rect()
@@ -452,7 +455,7 @@ def selectSeries():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-def selectVersionScreen(whatbook):
+def selectVersionScreen(whatbook): #TODO: Requires resize window conversion
     if whatbook == 'ComeOn':
 
         menuBoard = ['CO1', 'CO2', 'CO3', 'CO4']
@@ -507,7 +510,7 @@ def selectVersionScreen(whatbook):
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-def selectUnitScreen():
+def selectUnitScreen(): #TODO: Requires resize window conversion
     firstUnitBoard = [['1', '2', '3', '4'], ['5', '6', '7', '8']]
     secondUnitBoard = [['1', '2', '3', '4'], ['5', '6', '7', '8']]
     UNITFONT = pygame.font.SysFont('Minecraft', 40)
@@ -638,8 +641,8 @@ def selectUnitScreen():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
     
-def mainMenu():
-
+def mainMenu(): #TODO: Requires resize window conversion
+ 
     COButton = Menubutton(creeperCommonImages.menuButtons['mainMenu']['comeOnBook'], 'ComeOn', 'normal')
     COButton.rect.center = ((128*3), (128*2))
 
@@ -709,7 +712,7 @@ def mainMenu():
 
 
 
-def drawGameOverScreen(winner, teams):
+def drawGameOverScreen(winner, teams): #TODO: Requires resize window conversion
     DISPLAYSURF.blit(backgroundImage, (0,0))
     drawScoreHouse(teams)
     drawCreeperDamage(teams)
@@ -808,7 +811,7 @@ def checkForQuit():
             terminate()
         pygame.event.post(event)
 
-def game():
+def game(): #TODO: Requires resize window conversion - MAYBE?
     #Initialization settings
     global DISPLAYSURF, creeperSound, explosionImgs, FPSCLOCK
     global backgroundImage, explosionImgs, creeperSound, safeSound, winSound

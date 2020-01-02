@@ -430,7 +430,9 @@ def fetchRandomImagesFromChosenBook(bookVer):
     chosenImages = []
     while len(chosenImages) < 16:
         chosenUnit = random.choice(units)
-        chosenImages.append(random.choice(flashImages[bookVer][chosenUnit]))
+        chosenImage = random.choice(flashImages[bookVer][chosenUnit])
+        chosenImages.append(chosenImage)
+        flashImages[bookVer][chosenUnit].remove(chosenImage)
 
     pygameImages = [fetchImage(imagePath) for imagePath in chosenImages]
 
@@ -467,22 +469,3 @@ def fetchRandomImagesFromSeries(series):
     rowC = pygameImages[8:12]
     rowD = pygameImages[12:16]
     return [rowA, rowB, rowC, rowD]
-
-# class Menubutton():
-#     def __init__(self, path, state):
-#         self.path = path
-#         self.state = state
-#         self.surface = self.path[self.state]
-#         self.rect = self.surface.get_rect()
-
-# COButton = Menubutton(menuButtons['mainMenu']['comeOnBook'], 'hover')
-
-# print(COButton.surface)
-
-# COButton.rect.topleft = (200, 200)
-
-# print(COButton.rect)
-
-
-
-print
